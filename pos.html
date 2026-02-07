@@ -1,0 +1,2263 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نظام البيع - POS</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    
+    .top-nav {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 10px 15px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .nav-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+      color: #2c3e50;
+      font-size: 18px;
+    }
+    
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .sound-control {
+      background: #f8f9fa;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .sound-control:hover {
+      background: #e9ecef;
+    }
+    
+    .sound-control.muted {
+      background: #f8f9fa;
+      color: #95a5a6;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 4px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .nav-tab {
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      color: #7f8c8d;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 120px;
+      justify-content: center;
+    }
+    
+    .nav-tab.active {
+      background: #3498db;
+      color: white;
+      box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+    
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .pos-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .pos-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .pos-products-section {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    .pos-cart-section {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      max-height: 600px;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #3498db;
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .categories-filter {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      overflow-x: auto;
+      padding: 5px 0;
+    }
+    
+    .category-btn {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 20px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+    
+    .category-btn.active {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+    }
+    
+    .category-btn:hover {
+      background: #f8f9fa;
+    }
+    
+    .category-btn.active:hover {
+      background: #2980b9;
+    }
+    
+    .search-box {
+      position: relative;
+      margin-bottom: 15px;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 12px 40px 12px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    
+    .search-box i {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+      color: #95a5a6;
+    }
+    
+    .pos-products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+      margin-top: 15px;
+    }
+    
+    .pos-product-card {
+      background: #f8f9fa;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .pos-product-card:hover {
+      border-color: #3498db;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(52, 152, 219, 0.15);
+    }
+    
+    .pos-product-name {
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #2c3e50;
+    }
+    
+    .pos-product-price {
+      font-size: 14px;
+      font-weight: bold;
+      color: #27ae60;
+      margin-bottom: 5px;
+    }
+    
+    .pos-product-stock {
+      font-size: 11px;
+      color: #7f8c8d;
+    }
+    
+    .pos-product-stock.low {
+      color: #e74c3c;
+    }
+    
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .cart-count {
+      background: #3498db;
+      color: white;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+    
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      max-height: 350px;
+    }
+    
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      background: #f8f9fa;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    
+    .cart-item-info {
+      flex: 1;
+    }
+    
+    .cart-item-name {
+      font-weight: 600;
+      font-size: 13px;
+    }
+    
+    .cart-item-price {
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+    
+    .cart-item-quantity {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 10px;
+    }
+    
+    .quantity-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .quantity-value {
+      min-width: 30px;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .cart-item-total {
+      font-weight: bold;
+      color: #2c3e50;
+      min-width: 60px;
+      text-align: left;
+    }
+    
+    .cart-item-remove {
+      color: #e74c3c;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    
+    .cart-summary {
+      border-top: 2px solid #eee;
+      padding-top: 15px;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .summary-row.total {
+      border-top: 2px solid #2c3e50;
+      padding-top: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    
+    .payment-section {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+    
+    .payment-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .payment-input {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .payment-input label {
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #7f8c8d;
+    }
+    
+    .payment-input input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    .change-display {
+      text-align: center;
+      padding: 8px;
+      background: #d4f7e2;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #27ae60;
+    }
+    
+    .change-display.negative {
+      background: #ffeaea;
+      color: #e74c3c;
+    }
+    
+    .pos-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .btn {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .btn-primary {
+      background: #3498db;
+      color: white;
+    }
+    
+    .btn-success {
+      background: #27ae60;
+      color: white;
+    }
+    
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+    }
+    
+    .camera-section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    .camera-container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      background: #000;
+      margin-bottom: 15px;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    
+    #camera-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+    
+    .camera-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 150px;
+      border: 3px solid rgba(52, 152, 219, 0.8);
+      box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+    }
+    
+    .scan-result {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    
+    .camera-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .scanned-products {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .scanned-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      background: #f8f9fa;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    
+    .scanned-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .empty-cart, .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #95a5a6;
+    }
+    
+    .empty-cart i, .empty-state i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: #bdc3c7;
+    }
+    
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 15px;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #3498db;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #7f8c8d;
+    }
+    
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 500;
+      z-index: 1001;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      animation: slideIn 0.3s ease;
+      max-width: 300px;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .notification-success {
+      background: #27ae60;
+    }
+    
+    .notification-error {
+      background: #e74c3c;
+    }
+    
+    .notification-info {
+      background: #3498db;
+    }
+    
+    .notification-warning {
+      background: #f39c12;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px 15px;
+      color: #95a5a6;
+    }
+    
+    .loading i {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #3498db;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .manual-input-section {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    
+    .manual-input-row {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .manual-input-row input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      text-align: center;
+      direction: ltr;
+    }
+    
+    .add-category-btn {
+      background: #f8f9fa;
+      border: 1px dashed #3498db;
+      color: #3498db;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+    
+    .add-category-btn:hover {
+      background: #e3f2fd;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .btn:disabled:hover {
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .add-product-btn {
+      background: #27ae60;
+      color: white;
+      margin-top: 10px;
+      width: 100%;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-title">
+        <i class="fas fa-cash-register"></i>
+        <span>نظام البيع</span>
+      </div>
+      
+      <div class="nav-controls">
+        <div class="sound-control" id="soundControl" title="تشغيل/كتم صوت الباركود">
+          <i class="fas fa-volume-up" id="soundIcon"></i>
+        </div>
+        
+        <div class="nav-tabs">
+          <button class="nav-tab active" data-tab="manual-sale">
+            <i class="fas fa-hand-pointer"></i>
+            <span>البيع المباشر</span>
+          </button>
+          <button class="nav-tab" data-tab="camera-sale">
+            <i class="fas fa-camera"></i>
+            <span>البيع بالكاميرا</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div id="manual-sale" class="tab-content active">
+      <div class="pos-container">
+        <div class="pos-products-section">
+          <div class="section-title">
+            <i class="fas fa-boxes"></i>
+            <span>المنتجات المتاحة</span>
+          </div>
+          
+          <div class="categories-filter" id="categoriesFilter">
+            <button class="category-btn active" data-category="all">الكل</button>
+          </div>
+          
+          <div class="search-box">
+            <input type="text" id="manualSearch" placeholder="ابحث عن منتج...">
+            <i class="fas fa-search"></i>
+          </div>
+          
+          <div class="pos-products-grid" id="manualProductsList">
+            <div class="loading">
+              <i class="fas fa-spinner"></i>
+              <p>جاري تحميل المنتجات...</p>
+            </div>
+          </div>
+          
+          <button class="btn add-product-btn" id="goToInventoryBtn">
+            <i class="fas fa-plus"></i> إضافة منتج جديد
+          </button>
+        </div>
+        
+        <div class="pos-cart-section">
+          <div class="cart-header">
+            <div class="section-title">
+              <i class="fas fa-shopping-cart"></i>
+              <span>فاتورة البيع</span>
+            </div>
+            <span class="cart-count" id="manualCartCount">0</span>
+          </div>
+          
+          <div class="cart-items" id="manualCartItems">
+            <div class="empty-cart">
+              <i class="fas fa-shopping-cart"></i>
+              <p>السلة فارغة. أضف منتجات من القائمة.</p>
+            </div>
+          </div>
+          
+          <div class="cart-summary">
+            <div class="summary-row">
+              <span>المجموع:</span>
+              <span id="manualSubtotal">0 د.ع</span>
+            </div>
+            <div class="summary-row">
+              <span>الضريبة:</span>
+              <span id="manualTax">0 د.ع</span>
+            </div>
+            <div class="summary-row total">
+              <span>الإجمالي:</span>
+              <span id="manualTotal">0 د.ع</span>
+            </div>
+            
+            <div class="payment-section">
+              <div class="payment-inputs">
+                <div class="payment-input">
+                  <label>المبلغ المدفوع:</label>
+                  <input type="number" id="manualPaidAmount" value="0" min="0">
+                </div>
+                <div class="payment-input">
+                  <label>الباقي:</label>
+                  <div id="manualChangeAmount" class="change-display">0 د.ع</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="pos-actions">
+              <button class="btn btn-danger" id="clearManualBtn">
+                <i class="fas fa-trash"></i> مسح الفاتورة
+              </button>
+              <button class="btn btn-success" id="completeManualSaleBtn" disabled>
+                <i class="fas fa-check-circle"></i> إتمام البيع
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="camera-sale" class="tab-content">
+      <div class="camera-section">
+        <div class="section-title">
+          <i class="fas fa-camera"></i>
+          <span>مسح الباركود</span>
+        </div>
+        
+        <div class="camera-container">
+          <video id="camera-video" autoplay playsinline></video>
+          <div class="camera-overlay"></div>
+        </div>
+        
+        <div class="scan-result" id="scanResult">
+          <i class="fas fa-barcode"></i>
+          <span>جهّز الكاميرا نحو الباركود للمسح</span>
+        </div>
+        
+        <div class="camera-actions">
+          <button class="btn btn-primary" id="toggleCameraBtn">
+            <i class="fas fa-play"></i> تشغيل الكاميرا
+          </button>
+          <button class="btn" id="manualInputBtn">
+            <i class="fas fa-keyboard"></i> إدخال يدوي
+          </button>
+          <button class="btn btn-danger" id="clearCameraBtn">
+            <i class="fas fa-trash"></i> مسح السلة
+          </button>
+        </div>
+        
+        <div class="manual-input-section" id="manualInputSection" style="display:none;">
+          <div class="manual-input-row">
+            <input type="text" id="manualBarcodeInput" placeholder="أدخل الباركود يدوياً" dir="ltr">
+            <button class="btn btn-primary" id="confirmBarcodeBtn">
+              <i class="fas fa-check"></i> تأكيد
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="scanned-products">
+        <div class="section-title">
+          <i class="fas fa-shopping-cart"></i>
+          <span>المنتجات الممسوحة</span>
+          <span class="cart-count" id="cameraCartCount">0</span>
+        </div>
+        
+        <div id="cameraCartItems">
+          <div class="empty-state">
+            <i class="fas fa-barcode"></i>
+            <p>لم يتم مسح أي منتجات بعد</p>
+          </div>
+        </div>
+        
+        <div class="cart-summary">
+          <div class="summary-row">
+            <span>المجموع:</span>
+            <span id="cameraSubtotal">0 د.ع</span>
+          </div>
+          <div class="summary-row">
+            <span>الضريبة:</span>
+            <span id="cameraTax">0 د.ع</span>
+          </div>
+          <div class="summary-row total">
+            <span>الإجمالي:</span>
+            <span id="cameraTotal">0 د.ع</span>
+          </div>
+          
+          <div class="payment-section">
+            <div class="payment-inputs">
+              <div class="payment-input">
+                <label>المبلغ المدفوع:</label>
+                <input type="number" id="cameraPaidAmount" value="0" min="0">
+              </div>
+              <div class="payment-input">
+                <label>الباقي:</label>
+                <div id="cameraChangeAmount" class="change-display">0 د.ع</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pos-actions">
+            <button class="btn btn-success" id="completeCameraSaleBtn" disabled>
+              <i class="fas fa-check-circle"></i> إتمام البيع
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="receiptModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="section-title" style="border:none; margin:0; padding:0;">
+          <i class="fas fa-receipt"></i>
+          <span>فاتورة البيع</span>
+        </div>
+        <button class="modal-close" id="closeReceiptBtn">×</button>
+      </div>
+      
+      <div id="receiptContent"></div>
+      
+      <div style="display:flex; gap:10px; margin-top:20px;">
+        <button class="btn btn-primary" style="flex:1;" id="printReceiptBtn">
+          <i class="fas fa-print"></i> طباعة
+        </button>
+        <button class="btn" style="flex:1;" id="closeReceiptModalBtn">
+          <i class="fas fa-times"></i> إغلاق
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  
+  <script>
+    // ====================== متغيرات النظام ======================
+    let products = {};
+    let manualCart = [];
+    let cameraCart = [];
+    let cameraActive = false;
+    let soundEnabled = true;
+    let currentTab = 'manual-sale';
+    let currentUser = null;
+    let codeReader = null;
+    let mediaStream = null;
+    let categories = ['all'];
+    let videoElement = null;
+    let isScanning = false;
+    
+    // ====================== تهيئة التطبيق ======================
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('جاري تهيئة التطبيق...');
+      
+      // إعداد واجهة المستخدم أولاً
+      setupUI();
+      
+      // محاولة تهيئة Firebase
+      try {
+        const firebaseConfig = {
+          apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+          authDomain: "zio3-8ffdd.firebaseapp.com",
+          databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+          projectId: "zio3-8ffdd",
+          storageBucket: "zio3-8ffdd.firebasestorage.app",
+          messagingSenderId: "560939348415",
+          appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+          measurementId: "G-CVN2B2D0RD"
+        };
+        
+        // تهيئة Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+        
+        console.log('تم تهيئة Firebase بنجاح');
+        
+        // تسجيل الدخول المجهول
+        auth.signInAnonymously()
+          .then((userCredential) => {
+            console.log('تم تسجيل الدخول المجهول بنجاح');
+            currentUser = {
+              uid: userCredential.user.uid,
+              storeName: 'متجري'
+            };
+            
+            // تحميل المنتجات من Firebase
+            loadProducts(db);
+          })
+          .catch(error => {
+            console.error('خطأ في تسجيل الدخول:', error);
+            showNotification('فشل الاتصال بقاعدة البيانات', 'error');
+            renderManualProducts(); // عرض قائمة فارغة
+          });
+          
+      } catch (error) {
+        console.error('خطأ في تهيئة Firebase:', error);
+        showNotification('فشل تهيئة قاعدة البيانات', 'error');
+        renderManualProducts(); // عرض قائمة فارغة
+      }
+      
+      showNotification('نظام البيع جاهز للاستخدام', 'success');
+    });
+    
+    // ====================== تحميل المنتجات ======================
+    async function loadProducts(db) {
+      try {
+        console.log('جاري تحميل المنتجات من Firebase...');
+        
+        if (!currentUser || !db) {
+          console.error('المستخدم أو قاعدة البيانات غير معينة');
+          return;
+        }
+        
+        const snapshot = await db.ref(`stores/${currentUser.uid}/products`).once('value');
+        const productsData = snapshot.val();
+        
+        products = {};
+        if (productsData) {
+          console.log('تم العثور على منتجات في Firebase');
+          Object.keys(productsData).forEach(key => {
+            if (productsData[key]) {
+              products[key] = {
+                id: key,
+                name: productsData[key].name || 'بدون اسم',
+                price: productsData[key].price || 0,
+                stock: productsData[key].stock || 0,
+                barcode: productsData[key].barcode || '',
+                category: productsData[key].category || 'عام'
+              };
+            }
+          });
+        } else {
+          console.log('لا توجد منتجات في قاعدة البيانات');
+          showNotification('لا توجد منتجات في النظام. أضف منتجات أولاً.', 'info');
+        }
+        
+        // تحديث الواجهة
+        renderManualProducts();
+        extractCategories();
+        
+      } catch (error) {
+        console.error('خطأ في تحميل المنتجات:', error);
+        showNotification('خطأ في تحميل المنتجات من قاعدة البيانات', 'error');
+      }
+    }
+    
+    function extractCategories() {
+      const allCategories = new Set(['all']);
+      Object.values(products).forEach(product => {
+        if (product.category && product.category.trim() !== '') {
+          allCategories.add(product.category.trim());
+        }
+      });
+      categories = Array.from(allCategories);
+      renderCategories();
+    }
+    
+    function renderCategories() {
+      const container = document.getElementById('categoriesFilter');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      categories.forEach(category => {
+        const btn = document.createElement('button');
+        btn.className = `category-btn ${category === 'all' ? 'active' : ''}`;
+        btn.dataset.category = category;
+        btn.textContent = category === 'all' ? 'الكل' : category;
+        btn.addEventListener('click', () => filterByCategory(category));
+        container.appendChild(btn);
+      });
+      
+      const addBtn = document.createElement('button');
+      addBtn.className = 'add-category-btn';
+      addBtn.innerHTML = '<i class="fas fa-plus"></i>';
+      addBtn.title = 'إضافة تصنيف جديد';
+      addBtn.addEventListener('click', () => addNewCategory());
+      container.appendChild(addBtn);
+    }
+    
+    function filterByCategory(category) {
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      const activeBtn = document.querySelector(`[data-category="${category}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderManualProducts();
+    }
+    
+    function addNewCategory() {
+      const categoryName = prompt('أدخل اسم التصنيف الجديد:');
+      if (categoryName && categoryName.trim() !== '') {
+        const trimmedName = categoryName.trim();
+        if (!categories.includes(trimmedName)) {
+          categories.push(trimmedName);
+          renderCategories();
+          showNotification('تم إضافة التصنيف بنجاح', 'success');
+        }
+      }
+    }
+    
+    function renderManualProducts() {
+      const container = document.getElementById('manualProductsList');
+      if (!container) {
+        console.error('عنصر المنتجات غير موجود!');
+        return;
+      }
+      
+      const searchInput = document.getElementById('manualSearch');
+      const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+      const activeCategory = document.querySelector('.category-btn.active')?.dataset.category || 'all';
+      
+      console.log('جاري عرض المنتجات...');
+      console.log('عدد المنتجات:', Object.keys(products).length);
+      
+      let filteredProducts = Object.values(products).filter(p => p && p.name);
+      
+      if (activeCategory !== 'all') {
+        filteredProducts = filteredProducts.filter(p => p.category === activeCategory);
+      }
+      
+      if (searchTerm) {
+        filteredProducts = filteredProducts.filter(p => 
+          (p.name && p.name.toLowerCase().includes(searchTerm)) ||
+          (p.barcode && p.barcode.includes(searchTerm))
+        );
+      }
+      
+      if (filteredProducts.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-box-open"></i>
+            <p>لا توجد منتجات متاحة للبيع</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = '';
+      
+      filteredProducts.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.className = 'pos-product-card';
+        productCard.addEventListener('click', () => addToManualCart(product));
+        productCard.innerHTML = `
+          <div class="pos-product-name">${product.name || 'بدون اسم'}</div>
+          ${product.category ? `<div style="font-size:10px; color:#3498db; margin-bottom:3px;">${product.category}</div>` : ''}
+          <div class="pos-product-price">${(product.price || 0).toLocaleString()} د.ع</div>
+          <div class="pos-product-stock ${(product.stock || 0) <= 5 ? 'low' : ''}">المخزون: ${product.stock || 0}</div>
+        `;
+        
+        container.appendChild(productCard);
+      });
+      
+      console.log('تم عرض المنتجات بنجاح:', filteredProducts.length);
+    }
+    
+    function goToInventory() {
+      window.location.href = 'inventory.html';
+    }
+    
+    // ====================== نظام البيع المباشر ======================
+    function addToManualCart(product) {
+      const existingItem = manualCart.find(item => item.id === product.id);
+      
+      if (existingItem) {
+        if (existingItem.quantity >= product.stock) {
+          showNotification('لا يمكن إضافة كمية أكثر من المخزون المتاح', 'warning');
+          playSound('warning');
+          return;
+        }
+        existingItem.quantity += 1;
+      } else {
+        if (product.stock < 1) {
+          showNotification('هذا المنتج غير متوفر في المخزون', 'warning');
+          playSound('warning');
+          return;
+        }
+        manualCart.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          stock: product.stock,
+          quantity: 1
+        });
+      }
+      
+      updateManualCartDisplay();
+      playSound('beep');
+      showNotification(`تمت إضافة ${product.name} إلى السلة`, 'success');
+    }
+    
+    function updateManualCartQuantity(productId, change) {
+      const item = manualCart.find(item => item.id === productId);
+      if (!item) return;
+      
+      const newQuantity = item.quantity + change;
+      
+      if (newQuantity < 1) {
+        removeFromManualCart(productId);
+        return;
+      }
+      
+      if (newQuantity > item.stock) {
+        showNotification('لا يمكن إضافة كمية أكثر من المخزون المتاح', 'warning');
+        playSound('warning');
+        return;
+      }
+      
+      item.quantity = newQuantity;
+      updateManualCartDisplay();
+    }
+    
+    function removeFromManualCart(productId) {
+      manualCart = manualCart.filter(item => item.id !== productId);
+      updateManualCartDisplay();
+      showNotification('تمت إزالة المنتج من السلة', 'info');
+    }
+    
+    function updateManualCartDisplay() {
+      const cartItemsEl = document.getElementById('manualCartItems');
+      const cartCountEl = document.getElementById('manualCartCount');
+      const subtotalEl = document.getElementById('manualSubtotal');
+      const totalEl = document.getElementById('manualTotal');
+      const changeEl = document.getElementById('manualChangeAmount');
+      const saleBtn = document.getElementById('completeManualSaleBtn');
+      
+      if (!cartItemsEl || !cartCountEl || !subtotalEl || !totalEl || !changeEl || !saleBtn) {
+        console.error('عناصر السلة غير موجودة!');
+        return;
+      }
+      
+      cartCountEl.textContent = manualCart.reduce((sum, item) => sum + item.quantity, 0);
+      
+      if (manualCart.length === 0) {
+        cartItemsEl.innerHTML = '<div class="empty-cart"><i class="fas fa-shopping-cart"></i><p>السلة فارغة. أضف منتجات من القائمة.</p></div>';
+        subtotalEl.textContent = '0 د.ع';
+        totalEl.textContent = '0 د.ع';
+        changeEl.textContent = '0 د.ع';
+        changeEl.className = 'change-display';
+        saleBtn.disabled = true;
+        return;
+      }
+      
+      const subtotal = manualCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const total = subtotal;
+      
+      subtotalEl.textContent = subtotal.toLocaleString() + ' د.ع';
+      totalEl.textContent = total.toLocaleString() + ' د.ع';
+      
+      updateManualChange();
+      
+      cartItemsEl.innerHTML = '';
+      manualCart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">${item.price.toLocaleString()} × ${item.quantity}</div>
+          </div>
+          <div class="cart-item-quantity">
+            <button class="quantity-btn decrease-btn" data-id="${item.id}">-</button>
+            <span class="quantity-value">${item.quantity}</span>
+            <button class="quantity-btn increase-btn" data-id="${item.id}">+</button>
+          </div>
+          <div class="cart-item-total">${itemTotal.toLocaleString()} د.ع</div>
+          <div class="cart-item-remove remove-btn" data-id="${item.id}">
+            <i class="fas fa-times"></i>
+          </div>
+        `;
+        cartItemsEl.appendChild(div);
+      });
+      
+      // إضافة مستمعي الأحداث للأزرار الجديدة
+      setTimeout(() => {
+        document.querySelectorAll('.decrease-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const productId = e.target.dataset.id;
+            updateManualCartQuantity(productId, -1);
+          });
+        });
+        
+        document.querySelectorAll('.increase-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const productId = e.target.dataset.id;
+            updateManualCartQuantity(productId, 1);
+          });
+        });
+        
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const productId = e.target.closest('.remove-btn').dataset.id;
+            removeFromManualCart(productId);
+          });
+        });
+      }, 100);
+      
+      saleBtn.disabled = false;
+    }
+    
+    function updateManualChange() {
+      const paidInput = document.getElementById('manualPaidAmount');
+      if (!paidInput) return;
+      
+      const paidAmount = parseFloat(paidInput.value) || 0;
+      const total = manualCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const change = paidAmount - total;
+      const changeEl = document.getElementById('manualChangeAmount');
+      
+      if (!changeEl) return;
+      
+      changeEl.textContent = Math.abs(change).toLocaleString() + ' د.ع';
+      
+      if (change < 0) {
+        changeEl.className = 'change-display negative';
+      } else {
+        changeEl.className = 'change-display';
+      }
+    }
+    
+    function clearManualCart() {
+      if (manualCart.length === 0) return;
+      
+      if (confirm('هل تريد مسح الفاتورة الحالية؟')) {
+        manualCart = [];
+        updateManualCartDisplay();
+        document.getElementById('manualPaidAmount').value = '0';
+        showNotification('تم مسح الفاتورة', 'info');
+      }
+    }
+    
+    async function completeManualSale() {
+      if (manualCart.length === 0) {
+        showNotification('السلة فارغة', 'warning');
+        return;
+      }
+      
+      const paidAmount = parseFloat(document.getElementById('manualPaidAmount').value) || 0;
+      const total = manualCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      
+      if (paidAmount < total) {
+        showNotification('المبلغ المدفوع غير كافي', 'error');
+        playSound('warning');
+        return;
+      }
+      
+      const saleData = {
+        storeName: currentUser?.storeName || 'متجري',
+        items: manualCart.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          total: item.price * item.quantity
+        })),
+        subtotal: total,
+        tax: 0,
+        total: total,
+        paidAmount: paidAmount,
+        change: paidAmount - total,
+        date: Date.now(),
+        timestamp: new Date().toLocaleString('ar-IQ'),
+        type: 'يدوي',
+        userId: currentUser?.uid || 'anonymous'
+      };
+      
+      try {
+        const db = firebase.database();
+        const saleRef = db.ref(`sales/${currentUser?.uid || 'anonymous'}`).push();
+        await saleRef.set(saleData);
+        
+        for (const item of manualCart) {
+          const newStock = item.stock - item.quantity;
+          await db.ref(`stores/${currentUser?.uid || 'anonymous'}/products/${item.id}`).update({
+            stock: newStock,
+            updatedAt: Date.now()
+          });
+        }
+        
+        await loadProducts(db);
+        
+        showReceipt(saleData);
+        
+        manualCart = [];
+        updateManualCartDisplay();
+        document.getElementById('manualPaidAmount').value = '0';
+        
+        playSound('success');
+        showNotification('تمت عملية البيع بنجاح', 'success');
+        
+        const searchInput = document.getElementById('manualSearch');
+        if (searchInput) searchInput.value = '';
+        
+      } catch (error) {
+        console.error('خطأ في إتمام البيع:', error);
+        showNotification('خطأ في إتمام البيع', 'error');
+      }
+    }
+    
+    // ====================== نظام الصوت ======================
+    function playSound(type) {
+      if (!soundEnabled) return;
+      
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        let frequency = 800;
+        let duration = 0.1;
+        
+        switch(type) {
+          case 'beep':
+            frequency = 800;
+            duration = 0.1;
+            break;
+          case 'scan':
+            frequency = 1200;
+            duration = 0.05;
+            break;
+          case 'success':
+            playBeepSequence([523.25, 659.25, 783.99], [0.2, 0.2, 0.2]);
+            return;
+          case 'warning':
+            playBeepSequence([300, 200, 300, 200], [0.1, 0.1, 0.1, 0.1]);
+            return;
+        }
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = frequency;
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration);
+        
+      } catch (error) {
+        console.log("خطأ في تشغيل الصوت:", error);
+      }
+    }
+    
+    function playBeepSequence(frequencies, durations) {
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let currentTime = audioContext.currentTime;
+        
+        frequencies.forEach((freq, index) => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.value = freq;
+          oscillator.type = 'sine';
+          
+          gainNode.gain.setValueAtTime(0.3, currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + durations[index]);
+          
+          oscillator.start(currentTime);
+          oscillator.stop(currentTime + durations[index]);
+          
+          currentTime += durations[index] + 0.05;
+        });
+      } catch (error) {
+        console.log("خطأ في تشغيل تسلسل الصوت:", error);
+      }
+    }
+    
+    // ====================== نظام الكاميرا والباركود ======================
+    function initBarcodeReader() {
+      try {
+        if (typeof ZXing === 'undefined') {
+          console.error('مكتبة ZXing غير محملة');
+          return null;
+        }
+        codeReader = new ZXing.BrowserMultiFormatReader();
+        console.log('تم تهيئة قارئ الباركود بنجاح');
+        return codeReader;
+      } catch (error) {
+        console.error('خطأ في تهيئة قارئ الباركود:', error);
+        return null;
+      }
+    }
+    
+    async function toggleCamera() {
+      try {
+        if (cameraActive) {
+          stopCamera();
+        } else {
+          await startCamera();
+        }
+      } catch (error) {
+        console.error('خطأ في تبديل حالة الكاميرا:', error);
+        showNotification('حدث خطأ في الكاميرا', 'error');
+      }
+    }
+    
+    async function startCamera() {
+      try {
+        console.log('جاري تشغيل الكاميرا...');
+        
+        videoElement = document.getElementById('camera-video');
+        if (!videoElement) {
+          console.error('عنصر الفيديو غير موجود!');
+          showNotification('عنصر الكاميرا غير موجود', 'error');
+          return;
+        }
+        
+        if (mediaStream) {
+          stopCamera();
+        }
+        
+        const constraints = {
+          video: {
+            facingMode: 'environment',
+            width: { min: 640, ideal: 1280, max: 1920 },
+            height: { min: 480, ideal: 720, max: 1080 }
+          },
+          audio: false
+        };
+        
+        try {
+          mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (err) {
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false
+          });
+        }
+        
+        console.log('تم الحصول على إذن الكاميرا');
+        
+        videoElement.srcObject = mediaStream;
+        
+        await new Promise((resolve, reject) => {
+          videoElement.onloadedmetadata = () => {
+            console.log('تم تحميل بيانات الفيديو');
+            resolve();
+          };
+          
+          videoElement.onerror = reject;
+          
+          setTimeout(() => {
+            if (videoElement.readyState < 2) {
+              reject(new Error('فشل تحميل الفيديو'));
+            }
+          }, 5000);
+        });
+        
+        try {
+          await videoElement.play();
+        } catch (playError) {
+          console.error('خطأ في تشغيل الفيديو:', playError);
+          videoElement.muted = true;
+          await videoElement.play();
+        }
+        
+        console.log('تم تشغيل الفيديو بنجاح');
+        
+        cameraActive = true;
+        updateCameraButton();
+        updateScanResult('جاهز للمسح - وجّه الكاميرا نحو الباركود', 'info');
+        
+        if (!codeReader) {
+          codeReader = initBarcodeReader();
+        }
+        
+        if (!codeReader) {
+          showNotification('تعذر تحميل قارئ الباركود', 'error');
+          return;
+        }
+        
+        isScanning = true;
+        startBarcodeScanning();
+        
+        console.log('الكاميرا جاهزة للمسح');
+        
+      } catch (error) {
+        console.error('خطأ في تشغيل الكاميرا:', error);
+        
+        let errorMessage = 'تعذر الوصول إلى الكاميرا';
+        if (error.name === 'NotAllowedError') {
+          errorMessage = 'تم رفض الإذن للوصول إلى الكاميرا';
+        } else if (error.name === 'NotFoundError') {
+          errorMessage = 'لم يتم العثور على كاميرا';
+        } else if (error.name === 'NotReadableError') {
+          errorMessage = 'الكاميرا قيد الاستخدام من قبل تطبيق آخر';
+        } else if (error.name === 'OverconstrainedError') {
+          errorMessage = 'الكاميرا لا تدعم المواصفات المطلوبة';
+        } else if (error.message === 'فشل تحميل الفيديو') {
+          errorMessage = 'فشل تحميل تدفق الكاميرا';
+        }
+        
+        showNotification(errorMessage, 'error');
+        updateScanResult(errorMessage, 'error');
+        cameraActive = false;
+        updateCameraButton();
+      }
+    }
+    
+    async function startBarcodeScanning() {
+      if (!isScanning || !codeReader || !videoElement) return;
+      
+      try {
+        console.log('بدء مسح الباركود...');
+        
+        codeReader.decodeFromVideoElement(videoElement, (result, error) => {
+          if (result) {
+            console.log('تم العثور على باركود:', result.text);
+            handleBarcodeScanned(result.text);
+            
+            isScanning = false;
+            setTimeout(() => {
+              isScanning = true;
+              if (cameraActive) {
+                startBarcodeScanning();
+              }
+            }, 2000);
+            
+            return;
+          }
+          
+          if (error && (!error.message || !error.message.includes('NotFound'))) {
+            console.log('خطأ في قراءة الباركود:', error);
+          }
+          
+          if (isScanning && cameraActive) {
+            requestAnimationFrame(() => {
+              startBarcodeScanning();
+            });
+          }
+        });
+        
+      } catch (error) {
+        console.error('خطأ في مسح الباركود:', error);
+        
+        if (isScanning && cameraActive) {
+          setTimeout(() => {
+            startBarcodeScanning();
+          }, 1000);
+        }
+      }
+    }
+    
+    function stopCamera() {
+      console.log('جاري إيقاف الكاميرا...');
+      
+      isScanning = false;
+      cameraActive = false;
+      
+      if (codeReader) {
+        try {
+          codeReader.reset();
+        } catch (error) {
+          console.error('خطأ في إعادة تعيين قارئ الباركود:', error);
+        }
+      }
+      
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => {
+          track.stop();
+        });
+        mediaStream = null;
+      }
+      
+      if (videoElement) {
+        videoElement.srcObject = null;
+      }
+      
+      updateCameraButton();
+      updateScanResult('الكاميرا متوقفة', 'warning');
+      
+      console.log('تم إيقاف الكاميرا بنجاح');
+    }
+    
+    function updateCameraButton() {
+      const btn = document.getElementById('toggleCameraBtn');
+      if (!btn) return;
+      
+      if (cameraActive) {
+        btn.innerHTML = '<i class="fas fa-stop"></i> إيقاف الكاميرا';
+        btn.className = 'btn btn-danger';
+      } else {
+        btn.innerHTML = '<i class="fas fa-play"></i> تشغيل الكاميرا';
+        btn.className = 'btn btn-primary';
+      }
+    }
+    
+    function updateScanResult(message, type = 'info') {
+      const resultEl = document.getElementById('scanResult');
+      if (!resultEl) return;
+      
+      let icon = 'fa-barcode';
+      let color = '#3498db';
+      
+      if (type === 'success') {
+        icon = 'fa-check-circle';
+        color = '#27ae60';
+      } else if (type === 'error') {
+        icon = 'fa-exclamation-circle';
+        color = '#e74c3c';
+      } else if (type === 'warning') {
+        icon = 'fa-exclamation-triangle';
+        color = '#f39c12';
+      }
+      
+      resultEl.innerHTML = `<i class="fas ${icon}" style="color:${color}"></i> <span>${message}</span>`;
+    }
+    
+    function handleBarcodeScanned(barcode) {
+      console.log('تم مسح الباركود:', barcode);
+      
+      updateScanResult(`تم مسح: ${barcode}`, 'success');
+      playSound('scan');
+      
+      const product = Object.values(products).find(p => p.barcode === barcode);
+      
+      if (product) {
+        addToCameraCart(product);
+      } else {
+        showNotification(`المنتج غير موجود: ${barcode}`, 'warning');
+        
+        setTimeout(() => {
+          const shouldAddProduct = confirm(`المنتج غير موجود (${barcode}). هل تريد الانتقال إلى صفحة المخزون لإضافته؟`);
+          if (shouldAddProduct) {
+            // توجيه المستخدم إلى صفحة المخزون
+            window.location.href = `inventory.html?barcode=${barcode}`;
+          }
+        }, 500);
+      }
+      
+      setTimeout(() => {
+        if (cameraActive) {
+          updateScanResult('جاهز للمسح - وجّه الكاميرا نحو الباركود', 'info');
+        }
+      }, 2000);
+    }
+    
+    function addToCameraCart(product) {
+      const existingItem = cameraCart.find(item => item.id === product.id);
+      
+      if (existingItem) {
+        if (existingItem.quantity >= product.stock) {
+          showNotification('لا يمكن إضافة كمية أكثر من المخزون المتاح', 'warning');
+          playSound('warning');
+          return;
+        }
+        existingItem.quantity += 1;
+      } else {
+        if (product.stock < 1) {
+          showNotification('هذا المنتج غير متوفر في المخزون', 'warning');
+          playSound('warning');
+          return;
+        }
+        cameraCart.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          stock: product.stock,
+          quantity: 1
+        });
+      }
+      
+      updateCameraCartDisplay();
+      showNotification(`تمت إضافة ${product.name} إلى السلة`, 'success');
+    }
+    
+    function updateCameraCartQuantity(productId, change) {
+      const item = cameraCart.find(item => item.id === productId);
+      if (!item) return;
+      
+      const newQuantity = item.quantity + change;
+      
+      if (newQuantity < 1) {
+        removeFromCameraCart(productId);
+        return;
+      }
+      
+      if (newQuantity > item.stock) {
+        showNotification('لا يمكن إضافة كمية أكثر من المخزون المتاح', 'warning');
+        playSound('warning');
+        return;
+      }
+      
+      item.quantity = newQuantity;
+      updateCameraCartDisplay();
+    }
+    
+    function removeFromCameraCart(productId) {
+      cameraCart = cameraCart.filter(item => item.id !== productId);
+      updateCameraCartDisplay();
+      showNotification('تمت إزالة المنتج من السلة', 'info');
+    }
+    
+    function updateCameraCartDisplay() {
+      const cartItemsEl = document.getElementById('cameraCartItems');
+      const cartCountEl = document.getElementById('cameraCartCount');
+      const subtotalEl = document.getElementById('cameraSubtotal');
+      const totalEl = document.getElementById('cameraTotal');
+      const changeEl = document.getElementById('cameraChangeAmount');
+      const saleBtn = document.getElementById('completeCameraSaleBtn');
+      
+      if (!cartItemsEl || !cartCountEl || !subtotalEl || !totalEl || !changeEl || !saleBtn) {
+        console.error('عناصر سلة الكاميرا غير موجودة!');
+        return;
+      }
+      
+      cartCountEl.textContent = cameraCart.reduce((sum, item) => sum + item.quantity, 0);
+      
+      if (cameraCart.length === 0) {
+        cartItemsEl.innerHTML = '<div class="empty-state"><i class="fas fa-barcode"></i><p>لم يتم مسح أي منتجات بعد. ابدأ بمسح الباركود.</p></div>';
+        subtotalEl.textContent = '0 د.ع';
+        totalEl.textContent = '0 د.ع';
+        changeEl.textContent = '0 د.ع';
+        changeEl.className = 'change-display';
+        saleBtn.disabled = true;
+        return;
+      }
+      
+      const subtotal = cameraCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const total = subtotal;
+      
+      subtotalEl.textContent = subtotal.toLocaleString() + ' د.ع';
+      totalEl.textContent = total.toLocaleString() + ' د.ع';
+      
+      updateCameraChange();
+      
+      cartItemsEl.innerHTML = '';
+      cameraCart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        const div = document.createElement('div');
+        div.className = 'scanned-item';
+        div.innerHTML = `
+          <div>
+            <div style="font-weight:600;">${item.name}</div>
+            <div style="font-size:12px; color:#7f8c8d;">${item.price.toLocaleString()} × ${item.quantity}</div>
+          </div>
+          <div class="scanned-item-controls">
+            <div style="font-weight:bold; color:#2c3e50; margin-left:15px;">${itemTotal.toLocaleString()} د.ع</div>
+            <div class="cart-item-quantity">
+              <button class="quantity-btn camera-decrease-btn" data-id="${item.id}">-</button>
+              <span class="quantity-value">${item.quantity}</span>
+              <button class="quantity-btn camera-increase-btn" data-id="${item.id}">+</button>
+            </div>
+            <div class="cart-item-remove camera-remove-btn" data-id="${item.id}">
+              <i class="fas fa-times"></i>
+            </div>
+          </div>
+        `;
+        cartItemsEl.appendChild(div);
+      });
+      
+      setTimeout(() => {
+        document.querySelectorAll('.camera-decrease-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const productId = e.target.dataset.id;
+            updateCameraCartQuantity(productId, -1);
+          });
+        });
+        
+        document.querySelectorAll('.camera-increase-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const productId = e.target.dataset.id;
+            updateCameraCartQuantity(productId, 1);
+          });
+        });
+        
+        document.querySelectorAll('.camera-remove-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const productId = e.target.closest('.camera-remove-btn').dataset.id;
+            removeFromCameraCart(productId);
+          });
+        });
+      }, 100);
+      
+      saleBtn.disabled = false;
+    }
+    
+    function updateCameraChange() {
+      const paidInput = document.getElementById('cameraPaidAmount');
+      if (!paidInput) return;
+      
+      const paidAmount = parseFloat(paidInput.value) || 0;
+      const total = cameraCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const change = paidAmount - total;
+      const changeEl = document.getElementById('cameraChangeAmount');
+      
+      if (!changeEl) return;
+      
+      changeEl.textContent = Math.abs(change).toLocaleString() + ' د.ع';
+      
+      if (change < 0) {
+        changeEl.className = 'change-display negative';
+      } else {
+        changeEl.className = 'change-display';
+      }
+    }
+    
+    function showManualInput() {
+      const inputSection = document.getElementById('manualInputSection');
+      if (!inputSection) return;
+      
+      inputSection.style.display = inputSection.style.display === 'none' ? 'block' : 'none';
+      
+      if (inputSection.style.display === 'block') {
+        const barcodeInput = document.getElementById('manualBarcodeInput');
+        if (barcodeInput) {
+          barcodeInput.focus();
+        }
+      }
+    }
+    
+    function processManualBarcode() {
+      const barcodeInput = document.getElementById('manualBarcodeInput');
+      if (!barcodeInput) return;
+      
+      const barcode = barcodeInput.value.trim();
+      
+      if (!barcode) {
+        showNotification('يرجى إدخال باركود', 'warning');
+        return;
+      }
+      
+      handleBarcodeScanned(barcode);
+      barcodeInput.value = '';
+      document.getElementById('manualInputSection').style.display = 'none';
+    }
+    
+    function clearCameraCart() {
+      if (cameraCart.length === 0) return;
+      
+      if (confirm('هل تريد مسح جميع المنتجات الممسوحة؟')) {
+        cameraCart = [];
+        updateCameraCartDisplay();
+        document.getElementById('cameraPaidAmount').value = '0';
+        showNotification('تم مسح سلة الكاميرا', 'info');
+      }
+    }
+    
+    async function completeCameraSale() {
+      if (cameraCart.length === 0) {
+        showNotification('السلة فارغة', 'warning');
+        return;
+      }
+      
+      const paidAmount = parseFloat(document.getElementById('cameraPaidAmount').value) || 0;
+      const total = cameraCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      
+      if (paidAmount < total) {
+        showNotification('المبلغ المدفوع غير كافي', 'error');
+        playSound('warning');
+        return;
+      }
+      
+      const saleData = {
+        storeName: currentUser?.storeName || 'متجري',
+        items: cameraCart.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          total: item.price * item.quantity
+        })),
+        subtotal: total,
+        tax: 0,
+        total: total,
+        paidAmount: paidAmount,
+        change: paidAmount - total,
+        date: Date.now(),
+        timestamp: new Date().toLocaleString('ar-IQ'),
+        type: 'كاميرا',
+        userId: currentUser?.uid || 'anonymous'
+      };
+      
+      try {
+        const db = firebase.database();
+        const saleRef = db.ref(`sales/${currentUser?.uid || 'anonymous'}`).push();
+        await saleRef.set(saleData);
+        
+        for (const item of cameraCart) {
+          const newStock = item.stock - item.quantity;
+          await db.ref(`stores/${currentUser?.uid || 'anonymous'}/products/${item.id}`).update({
+            stock: newStock,
+            updatedAt: Date.now()
+          });
+        }
+        
+        await loadProducts(db);
+        
+        showReceipt(saleData);
+        
+        cameraCart = [];
+        updateCameraCartDisplay();
+        document.getElementById('cameraPaidAmount').value = '0';
+        
+        playSound('success');
+        showNotification('تمت عملية البيع بنجاح', 'success');
+        
+      } catch (error) {
+        console.error('خطأ في إتمام البيع:', error);
+        showNotification('خطأ في إتمام البيع', 'error');
+      }
+    }
+    
+    // ====================== نظام الفواتير ======================
+    function showReceipt(saleData) {
+      const receiptContent = document.getElementById('receiptContent');
+      if (!receiptContent) return;
+      
+      let itemsHtml = '';
+      saleData.items.forEach(item => {
+        itemsHtml += `
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed #ddd;">
+            <div>${item.name} (${item.quantity})</div>
+            <div>${(item.price * item.quantity).toLocaleString()} د.ع</div>
+          </div>
+        `;
+      });
+      
+      receiptContent.innerHTML = `
+        <div style="text-align:center; margin-bottom:15px; padding-bottom:10px; border-bottom:2px solid #3498db;">
+          <div style="font-size:18px; font-weight:bold; color:#2c3e50;">${saleData.storeName}</div>
+          <div style="font-size:12px; color:#7f8c8d;">${saleData.timestamp}</div>
+          <div style="font-size:11px; color:#95a5a6; margin-top:5px;">${saleData.type === 'كاميرا' ? 'بيع بالكاميرا' : 'بيع مباشر'}</div>
+        </div>
+        
+        <div style="margin-bottom:20px;">
+          ${itemsHtml}
+        </div>
+        
+        <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px; padding-top:15px; border-top:2px solid #2c3e50;">
+          <div>الإجمالي:</div>
+          <div>${saleData.total.toLocaleString()} د.ع</div>
+        </div>
+        
+        <div style="display:flex; justify-content:space-between; margin-top:10px;">
+          <div>المدفوع:</div>
+          <div>${saleData.paidAmount.toLocaleString()} د.ع</div>
+        </div>
+        
+        <div style="display:flex; justify-content:space-between; margin-top:10px; font-weight:bold; color:${saleData.change >= 0 ? '#27ae60' : '#e74c3c'};">
+          <div>${saleData.change >= 0 ? 'الباقي' : 'المطلوب'}:</div>
+          <div>${Math.abs(saleData.change).toLocaleString()} د.ع</div>
+        </div>
+        
+        <div style="text-align:center; margin-top:20px; padding-top:15px; border-top:1px dashed #ddd; font-size:11px; color:#7f8c8d;">
+          شكراً لكم<br>
+          ${new Date().toLocaleDateString('ar-IQ')}
+        </div>
+      `;
+      
+      document.getElementById('receiptModal').style.display = 'flex';
+    }
+    
+    function closeReceipt() {
+      document.getElementById('receiptModal').style.display = 'none';
+    }
+    
+    function printReceipt() {
+      const receiptWindow = window.open('', '_blank');
+      const receiptContent = document.getElementById('receiptContent').innerHTML;
+      const storeName = currentUser?.storeName || 'متجري';
+      const timestamp = new Date().toLocaleString('ar-IQ');
+      
+      receiptWindow.document.write(`
+        <!DOCTYPE html>
+        <html dir="rtl">
+        <head>
+          <title>فاتورة بيع</title>
+          <meta charset="utf-8">
+          <style>
+            @media print {
+              body { font-family: Arial, sans-serif; padding: 20px; font-size: 14px; }
+              .receipt { max-width: 300px; margin: 0 auto; }
+              .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+              .store-name { font-size: 18px; font-weight: bold; }
+              .date { font-size: 12px; color: #666; margin-top: 5px; }
+              .items { margin: 20px 0; }
+              .item { display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #ddd; }
+              .total { font-weight: bold; font-size: 16px; margin-top: 15px; padding-top: 15px; border-top: 2px solid #000; }
+              .footer { text-align: center; margin-top: 20px; font-size: 11px; color: #666; }
+            }
+          </style>
+        </head>
+        <body onload="window.print(); setTimeout(() => window.close(), 1000);">
+          <div class="receipt">
+            <div class="header">
+              <div class="store-name">${storeName}</div>
+              <div class="date">${timestamp}</div>
+            </div>
+            ${receiptContent}
+          </div>
+        </body>
+        </html>
+      `);
+      receiptWindow.document.close();
+    }
+    
+    // ====================== نظام الإشعارات ======================
+    function showNotification(message, type = 'info') {
+      const oldNotifications = document.querySelectorAll('.notification');
+      oldNotifications.forEach(n => {
+        if (n.parentNode) n.parentNode.removeChild(n);
+      });
+      
+      const notification = document.createElement('div');
+      notification.className = `notification notification-${type}`;
+      
+      let icon = 'info-circle';
+      if (type === 'success') icon = 'check-circle';
+      else if (type === 'error') icon = 'exclamation-circle';
+      else if (type === 'warning') icon = 'exclamation-triangle';
+      
+      notification.innerHTML = `
+        <i class="fas fa-${icon}"></i>
+        <span style="margin-right:10px;">${message}</span>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.style.opacity = '0';
+          notification.style.transform = 'translateX(100%)';
+          setTimeout(() => {
+            if (notification.parentNode) {
+              notification.parentNode.removeChild(notification);
+            }
+          }, 300);
+        }
+      }, 3000);
+    }
+    
+    // ====================== إعداد واجهة المستخدم ======================
+    function setupUI() {
+      console.log('جاري إعداد واجهة المستخدم...');
+      
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabId = this.getAttribute('data-tab');
+          switchTab(tabId);
+        });
+      });
+      
+      const manualSearch = document.getElementById('manualSearch');
+      if (manualSearch) {
+        manualSearch.addEventListener('input', renderManualProducts);
+      }
+      
+      const manualPaidAmount = document.getElementById('manualPaidAmount');
+      if (manualPaidAmount) {
+        manualPaidAmount.addEventListener('input', updateManualChange);
+      }
+      
+      const cameraPaidAmount = document.getElementById('cameraPaidAmount');
+      if (cameraPaidAmount) {
+        cameraPaidAmount.addEventListener('input', updateCameraChange);
+      }
+      
+      const manualBarcodeInput = document.getElementById('manualBarcodeInput');
+      if (manualBarcodeInput) {
+        manualBarcodeInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            processManualBarcode();
+          }
+        });
+      }
+      
+      // إعداد الأزرار
+      document.getElementById('soundControl')?.addEventListener('click', toggleSound);
+      document.getElementById('clearManualBtn')?.addEventListener('click', clearManualCart);
+      document.getElementById('completeManualSaleBtn')?.addEventListener('click', completeManualSale);
+      document.getElementById('toggleCameraBtn')?.addEventListener('click', toggleCamera);
+      document.getElementById('manualInputBtn')?.addEventListener('click', showManualInput);
+      document.getElementById('confirmBarcodeBtn')?.addEventListener('click', processManualBarcode);
+      document.getElementById('clearCameraBtn')?.addEventListener('click', clearCameraCart);
+      document.getElementById('completeCameraSaleBtn')?.addEventListener('click', completeCameraSale);
+      document.getElementById('closeReceiptBtn')?.addEventListener('click', closeReceipt);
+      document.getElementById('closeReceiptModalBtn')?.addEventListener('click', closeReceipt);
+      document.getElementById('printReceiptBtn')?.addEventListener('click', printReceipt);
+      document.getElementById('goToInventoryBtn')?.addEventListener('click', goToInventory);
+      
+      document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'b') {
+          e.preventDefault();
+          if (currentTab === 'camera-sale') {
+            toggleCamera();
+          }
+        }
+        
+        if (e.key === 'F1') {
+          e.preventDefault();
+          switchTab('manual-sale');
+        }
+        
+        if (e.key === 'F2') {
+          e.preventDefault();
+          switchTab('camera-sale');
+        }
+        
+        if (e.key === 'F3') {
+          e.preventDefault();
+          if (currentTab === 'manual-sale' && !document.getElementById('completeManualSaleBtn').disabled) {
+            completeManualSale();
+          } else if (currentTab === 'camera-sale' && !document.getElementById('completeCameraSaleBtn').disabled) {
+            completeCameraSale();
+          }
+        }
+      });
+      
+      console.log('تم إعداد واجهة المستخدم بنجاح');
+    }
+    
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      updateSoundControl();
+      showNotification(soundEnabled ? 'تم تشغيل الصوت ✓' : 'تم كتم الصوت ✗', 'info');
+      
+      if (soundEnabled) {
+        setTimeout(() => playSound('beep'), 300);
+      }
+    }
+    
+    function updateSoundControl() {
+      const control = document.getElementById('soundControl');
+      const icon = document.getElementById('soundIcon');
+      
+      if (!control || !icon) return;
+      
+      if (soundEnabled) {
+        control.classList.remove('muted');
+        icon.className = 'fas fa-volume-up';
+        control.title = 'كتم صوت النظام';
+      } else {
+        control.classList.add('muted');
+        icon.className = 'fas fa-volume-mute';
+        control.title = 'تشغيل صوت النظام';
+      }
+    }
+    
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      const activeTab = document.querySelector(`[data-tab="${tabId}"]`);
+      const activeContent = document.getElementById(tabId);
+      
+      if (activeTab) activeTab.classList.add('active');
+      if (activeContent) activeContent.classList.add('active');
+      
+      currentTab = tabId;
+      
+      if (tabId !== 'camera-sale' && cameraActive) {
+        stopCamera();
+      }
+    }
+  </script>
+</body>
+</html>

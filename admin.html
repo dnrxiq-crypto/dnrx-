@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>لوحة تحكم الأدمن - نظام DNRX</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      padding: 16px;
+      background: #fff;
+      color: #000;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #000;
+    }
+    
+    h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .subtitle {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    /* معلومات الأدمن */
+    .admin-info {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .admin-details {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .admin-email {
+      font-weight: bold;
+      color: #000;
+      font-size: 16px;
+    }
+    
+    .admin-role {
+      background: #000;
+      color: #fff;
+      padding: 6px 15px;
+      border-radius: 20px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    /* الإحصائيات */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    
+    .stat-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 13px;
+      color: #666;
+    }
+    
+    /* الأقسام */
+    .users-section,
+    .shops-section,
+    .products-section {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .search-box {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+      width: 200px;
+    }
+    
+    .filter-buttons {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .filter-btn {
+      padding: 6px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    
+    .filter-btn.active {
+      background: #000;
+      color: #fff;
+      border-color: #000;
+    }
+    
+    /* جدول المستخدمين */
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    
+    .users-table th {
+      background: #f5f5f5;
+      padding: 12px;
+      text-align: right;
+      font-weight: bold;
+      border-bottom: 2px solid #000;
+    }
+    
+    .users-table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .user-row:hover {
+      background: #f9f9f9;
+    }
+    
+    .user-email {
+      font-weight: bold;
+    }
+    
+    /* حالة المستخدم */
+    .user-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    
+    .status-pending {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    
+    .status-approved {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    .status-admin {
+      background: #f3e5f5;
+      color: #6a1b9a;
+    }
+    
+    /* أزرار الإجراءات */
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    
+    .action-btn {
+      padding: 6px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+    
+    .approve-btn {
+      border-color: #2e7d32;
+      color: #2e7d32;
+    }
+    
+    .approve-btn:hover {
+      background: #2e7d32;
+      color: #fff;
+    }
+    
+    .disable-btn {
+      border-color: #f44336;
+      color: #f44336;
+    }
+    
+    .disable-btn:hover {
+      background: #f44336;
+      color: #fff;
+    }
+    
+    .delete-btn {
+      border-color: #757575;
+      color: #757575;
+    }
+    
+    .delete-btn:hover {
+      background: #757575;
+      color: #fff;
+    }
+    
+    /* الرسائل */
+    .message {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      text-align: center;
+      font-size: 13px;
+      display: none;
+    }
+    
+    .success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+    
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+    }
+    
+    .info {
+      background: #e3f2fd;
+      color: #1565c0;
+      border: 1px solid #bbdefb;
+    }
+    
+    /* التحميل */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0,0,0,.1);
+      border-radius: 50%;
+      border-top-color: #000;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* التذييل */
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid #ddd;
+      color: #666;
+      font-size: 12px;
+    }
+    
+    /* أزرار التنقل */
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .nav-btn {
+      padding: 10px 16px;
+      border: 1px solid #000;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #fff;
+      color: #000;
+      transition: all 0.2s;
+    }
+    
+    .nav-btn:hover {
+      background: #f5f5f5;
+    }
+    
+    .nav-btn-primary {
+      background: #000;
+      color: #fff;
+    }
+    
+    .nav-btn-primary:hover {
+      background: #333;
+    }
+    
+    /* حالة عدم وجود بيانات */
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    
+    .no-data i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: #ddd;
+    }
+    
+    /* زر العودة للرئيسية */
+    .back-to-main {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    
+    /* إصلاحات للشاشات الصغيرة */
+    @media (max-width: 768px) {
+      .admin-info {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .users-table {
+        display: block;
+        overflow-x: auto;
+      }
+      
+      .section-title {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .controls {
+        width: 100%;
+      }
+      
+      .search-box {
+        width: 100%;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+      
+      .nav-buttons {
+        flex-direction: column;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+      
+      .admin-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      
+      .users-section,
+      .shops-section,
+      .products-section {
+        padding: 15px;
+      }
+      
+      .stat-card {
+        padding: 15px;
+      }
+      
+      .stat-value {
+        font-size: 24px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-user-shield"></i> لوحة تحكم الأدمن</h1>
+      <p class="subtitle">إدارة النظام الكامل - متاجر، منتجات، ومستخدمين</p>
+    </header>
+    
+    <!-- معلومات الأدمن -->
+    <div class="admin-info">
+      <div class="admin-details">
+        <div>
+          <div class="admin-email" id="adminEmail">جاري التحميل...</div>
+          <div style="font-size: 12px; color: #666;">معرف الأدمن: <span id="adminId">...</span></div>
+        </div>
+        <div class="admin-role">
+          <i class="fas fa-crown"></i> مسؤول النظام
+        </div>
+      </div>
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="location.href='main.html'">
+          <i class="fas fa-home"></i> لوحة التحكم الرئيسية
+        </button>
+        <button class="nav-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> تسجيل خروج
+        </button>
+      </div>
+    </div>
+    
+    <!-- رسائل النظام -->
+    <div id="message" class="message"></div>
+    
+    <!-- إحصائيات سريعة -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-value" id="totalUsers">0</div>
+        <div class="stat-label">إجمالي المستخدمين</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="totalShops">0</div>
+        <div class="stat-label">إجمالي المتاجر</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="pendingApprovals">0</div>
+        <div class="stat-label">بانتظار الموافقة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="totalAdmins">0</div>
+        <div class="stat-label">المسؤولون</div>
+      </div>
+    </div>
+    
+    <!-- قسم إدارة المستخدمين -->
+    <div class="users-section">
+      <h3 class="section-title">
+        <i class="fas fa-users"></i> إدارة المستخدمين
+        <div class="controls">
+          <input 
+            type="text" 
+            class="search-box" 
+            id="userSearchInput"
+            placeholder="ابحث بالبريد الإلكتروني..."
+            onkeyup="filterUsers()"
+          >
+          <div class="filter-buttons">
+            <button class="filter-btn active" onclick="setUserFilter('all')">الكل</button>
+            <button class="filter-btn" onclick="setUserFilter('pending')">بانتظار الموافقة</button>
+            <button class="filter-btn" onclick="setUserFilter('approved')">مفعلون</button>
+            <button class="filter-btn" onclick="setUserFilter('admins')">مسؤولون</button>
+          </div>
+        </div>
+      </h3>
+      
+      <!-- جدول المستخدمين -->
+      <div id="usersTableContainer">
+        <table class="users-table" id="usersTable">
+          <thead>
+            <tr>
+              <th>الاسم الكامل</th>
+              <th>البريد الإلكتروني</th>
+              <th>المتجر</th>
+              <th>الدور</th>
+              <th>الحالة</th>
+              <th>تاريخ التسجيل</th>
+              <th>الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr>
+              <td colspan="7" class="no-data">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>جاري تحميل بيانات المستخدمين...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- قسم إدارة المتاجر -->
+    <div class="shops-section">
+      <h3 class="section-title">
+        <i class="fas fa-store"></i> إدارة المتاجر
+        <div class="controls">
+          <input 
+            type="text" 
+            class="search-box" 
+            id="shopSearchInput"
+            placeholder="ابحث باسم المتجر..."
+            onkeyup="filterShops()"
+          >
+        </div>
+      </h3>
+      
+      <!-- جدول المتاجر -->
+      <div id="shopsTableContainer">
+        <table class="users-table" id="shopsTable">
+          <thead>
+            <tr>
+              <th>اسم المتجر</th>
+              <th>صاحب المتجر</th>
+              <th>نوع المتجر</th>
+              <th>الدولة</th>
+              <th>المدينة</th>
+              <th>تاريخ الإنشاء</th>
+              <th>الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="shopsTableBody">
+            <tr>
+              <td colspan="7" class="no-data">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>جاري تحميل بيانات المتاجر...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="back-to-main">
+      <button class="nav-btn nav-btn-primary" onclick="location.href='main.html'">
+        <i class="fas fa-arrow-right"></i> العودة للرئيسية
+      </button>
+    </div>
+    
+    <footer>
+      <p>نظام DNRX - الإصدار 1.0 | لوحة تحكم الأدمن</p>
+      <p>جميع الحقوق محفوظة © 2026</p>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      collection, 
+      query, 
+      getDocs, 
+      doc, 
+      updateDoc, 
+      deleteDoc,
+      where,
+      serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+      authDomain: "zio3-8ffdd.firebaseapp.com",
+      databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+      projectId: "zio3-8ffdd",
+      storageBucket: "zio3-8ffdd.firebasestorage.app",
+      messagingSenderId: "560939348415",
+      appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+      measurementId: "G-CVN2B2D0RD"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    
+    const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
+    
+    let currentAdmin = null;
+    let allUsers = [];
+    let allShops = [];
+    let currentUserFilter = 'all';
+    let isRedirecting = false;
+
+    function showMessage(type, text) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> 
+        ${text}
+      `;
+      messageDiv.className = `message ${type}`;
+      messageDiv.style.display = 'block';
+      
+      if (type !== 'success') {
+        setTimeout(() => {
+          messageDiv.style.display = 'none';
+        }, 5000);
+      }
+    }
+
+    function checkAdminPermissions(user) {
+      if (!user || !user.email) return false;
+      
+      // في نظامنا، الأدمن هو فقط ashlehl.iq@gmail.com
+      return user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    }
+
+    async function loadAllUsers() {
+      try {
+        const usersRef = collection(db, "dnrx_users");
+        const usersQuery = query(usersRef);
+        const querySnapshot = await getDocs(usersQuery);
+        
+        allUsers = [];
+        let pendingCount = 0;
+        let adminCount = 0;
+        
+        querySnapshot.forEach((docSnap) => {
+          const userData = docSnap.data();
+          const user = {
+            id: docSnap.id,
+            email: userData.email || 'غير معروف',
+            fullName: userData.fullName || 'غير معروف',
+            storeName: userData.storeName || 'لا يوجد',
+            storeType: userData.storeType || 'غير محدد',
+            userType: userData.userType || 'user',
+            approved: userData.approved === true,
+            profileComplete: userData.profileComplete === true,
+            country: userData.country || 'غير محدد',
+            city: userData.city || 'غير محدد',
+            createdAt: userData.createdAt || new Date(),
+            storeId: userData.storeId || null
+          };
+          
+          allUsers.push(user);
+          
+          // تحديث الإحصائيات
+          if (!user.approved) {
+            pendingCount++;
+          }
+          if (user.userType === 'admin') {
+            adminCount++;
+          }
+        });
+        
+        // تحديث الإحصائيات
+        document.getElementById('totalUsers').textContent = allUsers.length;
+        document.getElementById('pendingApprovals').textContent = pendingCount;
+        document.getElementById('totalAdmins').textContent = adminCount;
+        
+        renderUsersTable();
+        
+      } catch (error) {
+        console.error("❌ خطأ في تحميل المستخدمين:", error);
+        showMessage('error', 'فشل في تحميل بيانات المستخدمين');
+      }
+    }
+
+    async function loadAllShops() {
+      try {
+        const shopsRef = collection(db, "dnrx_stores");
+        const shopsQuery = query(shopsRef);
+        const querySnapshot = await getDocs(shopsQuery);
+        
+        allShops = [];
+        
+        querySnapshot.forEach((docSnap) => {
+          const shopData = docSnap.data();
+          allShops.push({
+            id: docSnap.id,
+            storeName: shopData.storeName || 'غير معروف',
+            storeType: shopData.storeType || 'غير محدد',
+            ownerId: shopData.ownerId || '',
+            country: shopData.country || 'غير محدد',
+            city: shopData.city || 'غير محدد',
+            currency: shopData.currency || 'غير محدد',
+            createdAt: shopData.createdAt || new Date()
+          });
+        });
+        
+        // تحديث الإحصائيات
+        document.getElementById('totalShops').textContent = allShops.length;
+        
+        // الحصول على أسماء أصحاب المتاجر
+        allShops.forEach(shop => {
+          const owner = allUsers.find(user => user.id === shop.ownerId);
+          shop.ownerName = owner ? owner.fullName : 'غير معروف';
+          shop.ownerEmail = owner ? owner.email : 'غير معروف';
+        });
+        
+        renderShopsTable();
+        
+      } catch (error) {
+        console.error("❌ خطأ في تحميل المتاجر:", error);
+        showMessage('error', 'فشل في تحميل بيانات المتاجر');
+      }
+    }
+
+    function renderUsersTable() {
+      const tbody = document.getElementById('usersTableBody');
+      const searchTerm = document.getElementById('userSearchInput').value.toLowerCase();
+      
+      // تصفية المستخدمين
+      let filteredUsers = allUsers.filter(user => {
+        // البحث بالبريد الإلكتروني أو الاسم
+        const matchesSearch = user.email.toLowerCase().includes(searchTerm) || 
+                             user.fullName.toLowerCase().includes(searchTerm);
+        
+        // الفلتر حسب الحالة
+        if (currentUserFilter === 'all') {
+          return matchesSearch;
+        } else if (currentUserFilter === 'pending') {
+          return matchesSearch && !user.approved;
+        } else if (currentUserFilter === 'approved') {
+          return matchesSearch && user.approved;
+        } else if (currentUserFilter === 'admins') {
+          return matchesSearch && user.userType === 'admin';
+        }
+        return matchesSearch;
+      });
+      
+      if (filteredUsers.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="no-data">
+              <i class="fas fa-users-slash"></i>
+              <p>لا توجد حسابات مطابقة للبحث</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      // فرز المستخدمين: المعلقين أولاً، ثم حسب التاريخ
+      filteredUsers.sort((a, b) => {
+        if (a.approved !== b.approved) {
+          return a.approved ? 1 : -1;
+        }
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+      
+      let tableHTML = '';
+      
+      filteredUsers.forEach(user => {
+        const date = user.createdAt?.seconds ? 
+          new Date(user.createdAt.seconds * 1000).toLocaleDateString('ar-SA') : 
+          'غير معروف';
+        
+        const statusText = user.approved ? 'مفعل' : 'بانتظار الموافقة';
+        const statusClass = user.approved ? 'status-approved' : 'status-pending';
+        const roleClass = user.userType === 'admin' ? 'status-admin' : '';
+        const roleText = user.userType === 'admin' ? 'مسؤول' : 'مستخدم';
+        
+        // الحصول على اسم المتجر
+        let shopName = user.storeName;
+        if (!shopName || shopName === 'لا يوجد') {
+          const shop = allShops.find(s => s.ownerId === user.id);
+          shopName = shop ? shop.storeName : 'لا يوجد';
+        }
+        
+        tableHTML += `
+          <tr class="user-row">
+            <td class="user-email">${user.fullName}</td>
+            <td>${user.email}</td>
+            <td>${shopName}</td>
+            <td><span class="user-status ${roleClass}">${roleText}</span></td>
+            <td><span class="user-status ${statusClass}">${statusText}</span></td>
+            <td>${date}</td>
+            <td>
+              <div class="action-buttons">
+                ${user.id !== currentAdmin?.uid ? `
+                  ${!user.approved ? `
+                    <button class="action-btn approve-btn" onclick="approveUser('${user.id}', '${user.email}')">
+                      <i class="fas fa-check"></i> موافقة
+                    </button>
+                  ` : `
+                    <button class="action-btn disable-btn" onclick="disableUser('${user.id}', '${user.email}')">
+                      <i class="fas fa-ban"></i> تعطيل
+                    </button>
+                  `}
+                  ${user.userType !== 'admin' ? `
+                    <button class="action-btn" onclick="makeAdmin('${user.id}', '${user.email}')">
+                      <i class="fas fa-crown"></i> ترقية
+                    </button>
+                  ` : `
+                    <button class="action-btn disable-btn" onclick="removeAdmin('${user.id}', '${user.email}')">
+                      <i class="fas fa-user"></i> إزالة صلاحيات
+                    </button>
+                  `}
+                  <button class="action-btn delete-btn" onclick="deleteUser('${user.id}', '${user.email}')">
+                    <i class="fas fa-trash"></i> حذف
+                  </button>
+                ` : `
+                  <span style="color: #666; font-size: 12px; padding: 6px 12px;">حسابك</span>
+                `}
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+      
+      tbody.innerHTML = tableHTML;
+    }
+
+    function renderShopsTable() {
+      const tbody = document.getElementById('shopsTableBody');
+      const searchTerm = document.getElementById('shopSearchInput').value.toLowerCase();
+      
+      if (allShops.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="no-data">
+              <i class="fas fa-store-slash"></i>
+              <p>لا توجد متاجر مسجلة</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      let filteredShops = allShops.filter(shop => {
+        return shop.storeName.toLowerCase().includes(searchTerm) || 
+               shop.ownerName.toLowerCase().includes(searchTerm) ||
+               shop.storeType.toLowerCase().includes(searchTerm);
+      });
+      
+      let tableHTML = '';
+      
+      filteredShops.forEach(shop => {
+        const date = shop.createdAt?.seconds ? 
+          new Date(shop.createdAt.seconds * 1000).toLocaleDateString('ar-SA') : 
+          'غير معروف';
+        
+        tableHTML += `
+          <tr class="user-row">
+            <td class="user-email">${shop.storeName}</td>
+            <td>${shop.ownerName} (${shop.ownerEmail})</td>
+            <td>${shop.storeType}</td>
+            <td>${shop.country}</td>
+            <td>${shop.city}</td>
+            <td>${date}</td>
+            <td>
+              <div class="action-buttons">
+                <button class="action-btn" onclick="viewShopDetails('${shop.id}')">
+                  <i class="fas fa-eye"></i> عرض
+                </button>
+                <button class="action-btn delete-btn" onclick="deleteShop('${shop.id}', '${shop.storeName}')">
+                  <i class="fas fa-trash"></i> حذف
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+      
+      tbody.innerHTML = tableHTML;
+    }
+
+    window.approveUser = async function(userId, userEmail) {
+      if (!confirm(`هل تريد الموافقة على المستخدم: ${userEmail}؟`)) {
+        return;
+      }
+      
+      try {
+        const userRef = doc(db, "dnrx_users", userId);
+        await updateDoc(userRef, {
+          approved: true,
+          updatedAt: serverTimestamp()
+        });
+        
+        showMessage('success', `✅ تمت الموافقة على ${userEmail}`);
+        loadAllUsers();
+        
+      } catch (error) {
+        console.error("❌ خطأ في الموافقة على المستخدم:", error);
+        showMessage('error', '❌ فشل في الموافقة على المستخدم');
+      }
+    };
+
+    window.disableUser = async function(userId, userEmail) {
+      if (!confirm(`هل تريد تعطيل المستخدم: ${userEmail}؟`)) {
+        return;
+      }
+      
+      try {
+        const userRef = doc(db, "dnrx_users", userId);
+        await updateDoc(userRef, {
+          approved: false,
+          updatedAt: serverTimestamp()
+        });
+        
+        showMessage('success', `✅ تم تعطيل المستخدم ${userEmail}`);
+        loadAllUsers();
+        
+      } catch (error) {
+        console.error("❌ خطأ في تعطيل المستخدم:", error);
+        showMessage('error', '❌ فشل في تعطيل المستخدم');
+      }
+    };
+
+    window.makeAdmin = async function(userId, userEmail) {
+      if (!confirm(`هل تريد ترقية ${userEmail} إلى مسؤول؟`)) {
+        return;
+      }
+      
+      try {
+        const userRef = doc(db, "dnrx_users", userId);
+        await updateDoc(userRef, {
+          userType: 'admin',
+          approved: true,
+          updatedAt: serverTimestamp()
+        });
+        
+        showMessage('success', `✅ تمت ترقية ${userEmail} إلى مسؤول`);
+        loadAllUsers();
+        
+      } catch (error) {
+        console.error("❌ خطأ في ترقية المستخدم:", error);
+        showMessage('error', '❌ فشل في ترقية المستخدم');
+      }
+    };
+
+    window.removeAdmin = async function(userId, userEmail) {
+      if (!confirm(`هل تريد إزالة صلاحيات المسؤول عن ${userEmail}؟`)) {
+        return;
+      }
+      
+      try {
+        const userRef = doc(db, "dnrx_users", userId);
+        await updateDoc(userRef, {
+          userType: 'user',
+          updatedAt: serverTimestamp()
+        });
+        
+        showMessage('success', `✅ تمت إزالة صلاحيات المسؤول عن ${userEmail}`);
+        loadAllUsers();
+        
+      } catch (error) {
+        console.error("❌ خطأ في إزالة صلاحيات المسؤول:", error);
+        showMessage('error', '❌ فشل في إزالة صلاحيات المسؤول');
+      }
+    };
+
+    window.deleteUser = async function(userId, userEmail) {
+      if (!confirm(`⚠️ تحذير: هل تريد حذف المستخدم ${userEmail} بشكل نهائي؟ سيتم حذف جميع بياناته ومتجره.`)) {
+        return;
+      }
+      
+      try {
+        // حذف المتجر المرتبط إذا وجد
+        const shopsRef = collection(db, "dnrx_stores");
+        const q = query(shopsRef, where("ownerId", "==", userId));
+        const querySnapshot = await getDocs(q);
+        
+        querySnapshot.forEach(async (docSnap) => {
+          await deleteDoc(doc(db, "dnrx_stores", docSnap.id));
+        });
+        
+        // حذف المستخدم
+        await deleteDoc(doc(db, "dnrx_users", userId));
+        
+        showMessage('success', `✅ تم حذف المستخدم ${userEmail}`);
+        loadAllUsers();
+        loadAllShops();
+        
+      } catch (error) {
+        console.error("❌ خطأ في حذف المستخدم:", error);
+        showMessage('error', '❌ فشل في حذف المستخدم');
+      }
+    };
+
+    window.deleteShop = async function(shopId, shopName) {
+      if (!confirm(`⚠️ تحذير: هل تريد حذف المتجر "${shopName}"؟ سيتم إلغاء ارتباط المستخدم بهذا المتجر.`)) {
+        return;
+      }
+      
+      try {
+        // البحث عن المستخدم المرتبط بهذا المتجر
+        const shopRef = doc(db, "dnrx_stores", shopId);
+        const shopSnap = await getDoc(shopRef);
+        
+        if (shopSnap.exists()) {
+          const shopData = shopSnap.data();
+          
+          // إلغاء ارتباط المستخدم بالمتجر
+          if (shopData.ownerId) {
+            await updateDoc(doc(db, "dnrx_users", shopData.ownerId), {
+              storeId: null,
+              updatedAt: serverTimestamp()
+            });
+          }
+          
+          // حذف المتجر
+          await deleteDoc(shopRef);
+          
+          showMessage('success', `✅ تم حذف المتجر "${shopName}"`);
+          loadAllShops();
+          loadAllUsers();
+        }
+        
+      } catch (error) {
+        console.error("❌ خطأ في حذف المتجر:", error);
+        showMessage('error', '❌ فشل في حذف المتجر');
+      }
+    };
+
+    window.viewShopDetails = function(shopId) {
+      const shop = allShops.find(s => s.id === shopId);
+      if (shop) {
+        const details = `
+          اسم المتجر: ${shop.storeName}
+          صاحب المتجر: ${shop.ownerName} (${shop.ownerEmail})
+          نوع المتجر: ${shop.storeType}
+          الدولة: ${shop.country}
+          المدينة: ${shop.city}
+          العملة: ${shop.currency}
+        `;
+        alert(details);
+      }
+    };
+
+    window.filterUsers = function() {
+      renderUsersTable();
+    };
+
+    window.setUserFilter = function(filter) {
+      currentUserFilter = filter;
+      
+      // تحديث أزرار الفلتر
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      renderUsersTable();
+    };
+
+    window.filterShops = function() {
+      renderShopsTable();
+    };
+
+    async function logoutAdmin() {
+      if (confirm('هل تريد تسجيل الخروج؟')) {
+        try {
+          await signOut(auth);
+          localStorage.removeItem('dnrx_user');
+          window.location.href = 'login.html';
+        } catch (error) {
+          console.error('❌ خطأ في تسجيل الخروج:', error);
+          showMessage('error', '❌ فشل تسجيل الخروج');
+        }
+      }
+    }
+
+    // التحقق من المستخدم عند تحميل الصفحة
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // التحقق مما إذا كنا قد قمنا بالفعل بتوجيه المستخدم
+        if (isRedirecting) {
+          console.log('✅ يتم التوجيه بالفعل، تخطي...');
+          return;
+        }
+        
+        currentAdmin = user;
+        
+        // التحقق من صلاحيات الأدمن
+        const isAdmin = checkAdminPermissions(user);
+        
+        if (!isAdmin) {
+          showMessage('error', '❌ ليس لديك صلاحيات الوصول إلى لوحة الأدمن');
+          setTimeout(() => {
+            window.location.href = 'main.html';
+          }, 2000);
+          return;
+        }
+        
+        // تحديث معلومات الأدمن
+        document.getElementById('adminEmail').textContent = user.email;
+        document.getElementById('adminId').textContent = user.uid.substring(0, 8) + '...';
+        
+        // إضافة حدث النقر لزر تسجيل الخروج
+        document.getElementById('logoutBtn').addEventListener('click', logoutAdmin);
+        
+        // تحميل جميع البيانات
+        await loadAllUsers();
+        await loadAllShops();
+        
+      } else {
+        // إذا لم يكن هناك مستخدم، قم بتوجيهه إلى صفحة تسجيل الدخول
+        if (!isRedirecting) {
+          console.log('❌ لا يوجد مستخدم، التوجيه إلى login.html');
+          isRedirecting = true;
+          window.location.href = 'login.html';
+        }
+      }
+    });
+
+    // تحميل البيانات أول مرة
+    window.addEventListener('load', () => {
+      console.log('🚀 لوحة تحكم الأدمن جاهزة');
+    });
+  </script>
+</body>
+</html>

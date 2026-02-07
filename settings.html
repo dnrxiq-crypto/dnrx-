@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>الإعدادات - نظام كاشير</title>
+  <style>
+    /* CSS Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      padding: 16px;
+      background: #fff;
+      color: #000;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #000;
+    }
+    
+    h1 {
+      font-size: 20px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .subtitle {
+      color: #666;
+      font-size: 13px;
+    }
+    
+    /* معلومات المستخدم */
+    .user-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    
+    .user-details {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .user-email {
+      font-weight: bold;
+      color: #000;
+    }
+    
+    .user-store {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+    
+    .user-role {
+      background: #000;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .admin-crown {
+      color: gold;
+    }
+    
+    /* البطاقات الشبكية */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .grid-item {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .grid-item:hover {
+      border-color: #000;
+      transform: translateY(-2px);
+    }
+    
+    .grid-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: #000;
+      display: block;
+    }
+    
+    .grid-title {
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    
+    .grid-desc {
+      font-size: 11px;
+      color: #666;
+    }
+    
+    /* إعدادات المتجر */
+    .settings-section {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .form-group {
+      margin-bottom: 14px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      border-radius: 6px;
+      background: #fff;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #000;
+    }
+    
+    /* Switches */
+    .switch-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .switch-label {
+      font-size: 13px;
+      flex: 1;
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ddd;
+      transition: .3s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+    }
+    
+    input:checked + .slider {
+      background-color: #000;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    
+    .slider.round {
+      border-radius: 34px;
+    }
+    
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    
+    /* الأزرار */
+    .button-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .btn {
+      padding: 12px 16px;
+      border: 1px solid #000;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #fff;
+      color: #000;
+      transition: all 0.2s;
+    }
+    
+    .btn:hover {
+      background: #f5f5f5;
+    }
+    
+    .btn-primary {
+      background: #000;
+      color: #fff;
+    }
+    
+    .btn-primary:hover {
+      background: #333;
+    }
+    
+    .btn-full {
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    /* التذييل */
+    footer {
+      text-align: center;
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 1px solid #ddd;
+      color: #666;
+      font-size: 12px;
+    }
+    
+    /* للشاشات الصغيرة جداً */
+    @media (max-width: 350px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .button-group {
+        grid-template-columns: 1fr;
+      }
+      
+      body {
+        padding: 12px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-cogs"></i> إعدادات النظام</h1>
+      <p class="subtitle">تعديل إعدادات المتجر والنظام</p>
+    </header>
+    
+    <!-- معلومات المستخدم -->
+    <div class="user-info" id="userInfo" style="display: none;">
+      <div class="user-details">
+        <div>
+          <div class="user-email" id="userEmail">جاري التحميل...</div>
+          <div class="user-store" id="userStore"></div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="user-role" id="userRole">
+          <i class="fas fa-user"></i>
+          <span>مستخدم</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- البطاقات الشبكية للتنقل السريع -->
+    <div class="grid-container">
+      <div class="grid-item" onclick="location.href='pos.html'">
+        <i class="fas fa-cash-register grid-icon"></i>
+        <div class="grid-title">نقطة البيع</div>
+        <div class="grid-desc">بدء البيع</div>
+      </div>
+      
+      <div class="grid-item" onclick="location.href='inventory.html'">
+        <i class="fas fa-boxes grid-icon"></i>
+        <div class="grid-title">المخزون</div>
+        <div class="grid-desc">إدارة المنتجات</div>
+      </div>
+      
+      <div class="grid-item" onclick="location.href='reports.html'">
+        <i class="fas fa-chart-bar grid-icon"></i>
+        <div class="grid-title">التقارير</div>
+        <div class="grid-desc">المبيعات والإحصائيات</div>
+      </div>
+      
+      <div class="grid-item" onclick="location.href='start.html'">
+        <i class="fas fa-home grid-icon"></i>
+        <div class="grid-title">البداية</div>
+        <div class="grid-desc">لوحة التحكم</div>
+      </div>
+    </div>
+    
+    <!-- إعدادات المتجر -->
+    <div class="settings-section">
+      <h3 class="section-title">
+        <i class="fas fa-store"></i> إعدادات المتجر
+      </h3>
+      
+      <div class="form-group">
+        <label>اسم المتجر:</label>
+        <input type="text" id="shopName" placeholder="اسم المتجر">
+      </div>
+      
+      <div class="form-group">
+        <label>عنوان المتجر:</label>
+        <input type="text" id="shopAddress" placeholder="العنوان">
+      </div>
+      
+      <div class="form-group">
+        <label>رقم الهاتف:</label>
+        <input type="text" id="shopPhone" placeholder="رقم الهاتف">
+      </div>
+      
+      <div class="form-group">
+        <label>العملة:</label>
+        <select id="currency">
+          <option value="د.ع">دينار عراقي (د.ع)</option>
+          <option value="$">دولار ($)</option>
+          <option value="ريال">ريال سعودي</option>
+          <option value="درهم">درهم إماراتي</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- إعدادات الفواتير -->
+    <div class="settings-section">
+      <h3 class="section-title">
+        <i class="fas fa-receipt"></i> إعدادات الفواتير
+      </h3>
+      
+      <div class="switch-group">
+        <span class="switch-label">طباعة الفواتير تلقائياً:</span>
+        <label class="switch">
+          <input type="checkbox" id="autoPrint">
+          <span class="slider round"></span>
+        </label>
+      </div>
+      
+      <div class="switch-group">
+        <span class="switch-label">إظهار المخزون في الفاتورة:</span>
+        <label class="switch">
+          <input type="checkbox" id="showStock" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+      
+      <div class="form-group">
+        <label>تحذير انخفاض المخزون:</label>
+        <select id="lowStockAlert">
+          <option value="5">عند 5 قطع أو أقل</option>
+          <option value="10" selected>عند 10 قطع أو أقل</option>
+          <option value="15">عند 15 قطع أو أقل</option>
+          <option value="20">عند 20 قطع أو أقل</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- الإشعارات -->
+    <div class="settings-section">
+      <h3 class="section-title">
+        <i class="fas fa-bell"></i> الإشعارات
+      </h3>
+      
+      <div class="switch-group">
+        <span class="switch-label">إشعارات انخفاض المخزون:</span>
+        <label class="switch">
+          <input type="checkbox" id="stockNotifications" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+      
+      <div class="switch-group">
+        <span class="switch-label">إشعارات النسخ الاحتياطي:</span>
+        <label class="switch">
+          <input type="checkbox" id="backupNotifications" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+    </div>
+    
+    <!-- أزرار التحكم -->
+    <div class="button-group">
+      <button class="btn btn-primary" onclick="saveSettings()">
+        <i class="fas fa-save"></i> حفظ
+      </button>
+      <button class="btn" onclick="resetSettings()">
+        <i class="fas fa-undo"></i> إعادة تعيين
+      </button>
+      <button class="btn" onclick="backupData()">
+        <i class="fas fa-download"></i> نسخ احتياطي
+      </button>
+    </div>
+    
+    <button class="btn btn-full" onclick="location.href='start.html'">
+      <i class="fas fa-arrow-right"></i> رجوع للقائمة الرئيسية
+    </button>
+    
+    <footer>
+      <p>نظام كاشير - الإصدار 1.0 | الإعدادات</p>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+      authDomain: "zio3-8ffdd.firebaseapp.com",
+      databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+      projectId: "zio3-8ffdd",
+      storageBucket: "zio3-8ffdd.firebasestorage.app",
+      messagingSenderId: "560939348415",
+      appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+      measurementId: "G-CVN2B2D0RD"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const firestore = getFirestore(app);
+    
+    // متغيرات لتتبع بيانات المستخدم والمتجر
+    let currentShopId = null;
+    let currentUserData = null;
+    let isRedirecting = false;
+
+    // الإعدادات الافتراضية
+    const defaultSettings = {
+      shopName: 'متجري',
+      shopAddress: '',
+      shopPhone: '',
+      currency: 'د.ع',
+      autoPrint: false,
+      showStock: true,
+      lowStockAlert: '10',
+      stockNotifications: true,
+      backupNotifications: true
+    };
+
+    // التحقق من المستخدم وحالته
+    async function checkUserAndPermissions(user) {
+      try {
+        if (!user) return { isAdmin: false, approved: false };
+        
+        const userEmail = user.email;
+        
+        // الحصول على بيانات المستخدم من localStorage أولاً
+        const savedUser = localStorage.getItem('dnrx_user');
+        if (savedUser) {
+          try {
+            const userData = JSON.parse(savedUser);
+            
+            // التحقق من أن بيانات localStorage تطابق المستخدم الحالي
+            if (userData.email === user.email) {
+              // تحديد shopId من بيانات المستخدم
+              let shopId = userData.shopId || userData.storeId;
+              
+              // إذا لم يكن هناك shopId، إنشاء واحد فريد بناءً على البريد الإلكتروني
+              if (!shopId) {
+                shopId = 'shop_' + user.email.replace(/[^a-zA-Z0-9]/g, '_');
+                // تحديث localStorage بالمعلومات الجديدة
+                userData.shopId = shopId;
+                localStorage.setItem('dnrx_user', JSON.stringify(userData));
+              }
+              
+              currentShopId = shopId;
+              currentUserData = userData;
+              
+              return { 
+                isAdmin: userData.userType === 'admin', 
+                approved: userData.approved === true || userData.approved === undefined,
+                email: userEmail,
+                storeName: userData.storeName || "متجري",
+                shopId: shopId
+              };
+            }
+          } catch (e) {
+            console.warn('❌ خطأ في تحليل بيانات localStorage:', e);
+            localStorage.removeItem('dnrx_user');
+          }
+        }
+        
+        // التحقق من Firestore إذا لم تكن البيانات موجودة في localStorage
+        const userRef = doc(firestore, "dnrx_users", user.uid);
+        const userSnap = await getDoc(userRef);
+        
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          
+          // تحديد shopId من بيانات المستخدم
+          let shopId = userData.shopId || userData.storeId;
+          
+          // إذا لم يكن هناك shopId، إنشاء واحد فريد بناءً على البريد الإلكتروني
+          if (!shopId) {
+            shopId = 'shop_' + user.email.replace(/[^a-zA-Z0-9]/g, '_');
+          }
+          
+          currentShopId = shopId;
+          currentUserData = userData;
+          
+          // حفظ في localStorage للمرة القادمة
+          localStorage.setItem('dnrx_user', JSON.stringify({
+            ...userData,
+            uid: user.uid,
+            email: user.email,
+            shopId: shopId
+          }));
+          
+          return { 
+            isAdmin: userData.userType === "admin" || userEmail === "ashlhl.iq@gmail.com", 
+            approved: userData.approved === true || userData.approved === undefined,
+            email: userEmail,
+            storeName: userData.storeName || "متجري",
+            shopId: shopId
+          };
+        } else {
+          // إذا لم يكن هناك سجل للمستخدم في dnrx_users، إنشاء متجر افتراضي
+          const shopId = 'shop_' + user.email.replace(/[^a-zA-Z0-9]/g, '_');
+          
+          currentShopId = shopId;
+          currentUserData = {
+            storeName: "متجري",
+            email: user.email
+          };
+          
+          return { 
+            isAdmin: userEmail === "ashlhl.iq@gmail.com", 
+            approved: true,
+            email: userEmail,
+            storeName: "متجري",
+            shopId: shopId
+          };
+        }
+        
+      } catch (error) {
+        console.error("❌ خطأ في التحقق من صلاحيات المستخدم:", error);
+        return { 
+          isAdmin: false, 
+          approved: true, 
+          email: user?.email || "غير معروف",
+          storeName: "متجري",
+          shopId: 'defaultShop'
+        };
+      }
+    }
+
+    // تحديث واجهة المستخدم حسب الصلاحيات
+    function updateUIForUser(userInfo) {
+      const userInfoDiv = document.getElementById('userInfo');
+      const userEmailSpan = document.getElementById('userEmail');
+      const userStoreSpan = document.getElementById('userStore');
+      const userRoleSpan = document.getElementById('userRole');
+      
+      if (userInfo.email) {
+        userEmailSpan.textContent = userInfo.email;
+        userInfoDiv.style.display = 'flex';
+      }
+      
+      if (userInfo.storeName) {
+        userStoreSpan.textContent = `المتجر: ${userInfo.storeName}`;
+      }
+      
+      if (userInfo.isAdmin) {
+        userRoleSpan.innerHTML = '<i class="fas fa-crown admin-crown"></i> <span>مسؤول</span>';
+      } else {
+        userRoleSpan.innerHTML = '<i class="fas fa-user"></i> <span>مستخدم</span>';
+      }
+    }
+
+    // تحميل الإعدادات
+    async function loadSettings() {
+      if (!currentShopId) {
+        console.warn('❌ لم يتم تحديد shopId بعد');
+        return;
+      }
+      
+      try {
+        const snap = await get(ref(db, `stores/${currentShopId}/settings`));
+        if (snap.exists()) {
+          const data = snap.val();
+          
+          document.getElementById('shopName').value = data.shopName || defaultSettings.shopName;
+          document.getElementById('shopAddress').value = data.shopAddress || defaultSettings.shopAddress;
+          document.getElementById('shopPhone').value = data.shopPhone || defaultSettings.shopPhone;
+          document.getElementById('currency').value = data.currency || defaultSettings.currency;
+          
+          document.getElementById('autoPrint').checked = data.autoPrint || defaultSettings.autoPrint;
+          document.getElementById('showStock').checked = data.showStock !== undefined ? data.showStock : defaultSettings.showStock;
+          document.getElementById('lowStockAlert').value = data.lowStockAlert || defaultSettings.lowStockAlert;
+          document.getElementById('stockNotifications').checked = data.stockNotifications !== undefined ? data.stockNotifications : defaultSettings.stockNotifications;
+          document.getElementById('backupNotifications').checked = data.backupNotifications !== undefined ? data.backupNotifications : defaultSettings.backupNotifications;
+          
+          localStorage.setItem('settings_' + currentShopId, JSON.stringify(data));
+        } else {
+          resetToDefaults();
+        }
+      } catch (e) {
+        console.warn('خطأ في تحميل الإعدادات:', e);
+        const local = localStorage.getItem('settings_' + currentShopId);
+        if (local) {
+          const data = JSON.parse(local);
+          applySettingsToForm(data);
+        } else {
+          resetToDefaults();
+        }
+      }
+    }
+
+    // تطبيق الإعدادات على النموذج
+    function applySettingsToForm(data) {
+      document.getElementById('shopName').value = data.shopName || '';
+      document.getElementById('shopAddress').value = data.shopAddress || '';
+      document.getElementById('shopPhone').value = data.shopPhone || '';
+      document.getElementById('currency').value = data.currency || 'د.ع';
+      document.getElementById('autoPrint').checked = data.autoPrint || false;
+      document.getElementById('showStock').checked = data.showStock !== undefined ? data.showStock : true;
+      document.getElementById('lowStockAlert').value = data.lowStockAlert || '10';
+      document.getElementById('stockNotifications').checked = data.stockNotifications !== undefined ? data.stockNotifications : true;
+      document.getElementById('backupNotifications').checked = data.backupNotifications !== undefined ? data.backupNotifications : true;
+    }
+
+    // استعادة الإعدادات الافتراضية
+    function resetToDefaults() {
+      applySettingsToForm(defaultSettings);
+    }
+
+    // حفظ الإعدادات
+    window.saveSettings = async function() {
+      if (!currentShopId) {
+        alert('❌ لم يتم تحديد المتجر بعد');
+        return;
+      }
+      
+      const settings = {
+        shopName: document.getElementById('shopName').value.trim() || defaultSettings.shopName,
+        shopAddress: document.getElementById('shopAddress').value.trim(),
+        shopPhone: document.getElementById('shopPhone').value.trim(),
+        currency: document.getElementById('currency').value,
+        autoPrint: document.getElementById('autoPrint').checked,
+        showStock: document.getElementById('showStock').checked,
+        lowStockAlert: document.getElementById('lowStockAlert').value,
+        stockNotifications: document.getElementById('stockNotifications').checked,
+        backupNotifications: document.getElementById('backupNotifications').checked,
+        lastUpdated: Date.now()
+      };
+
+      try {
+        await set(ref(db, `stores/${currentShopId}/settings`), settings);
+        localStorage.setItem('settings_' + currentShopId, JSON.stringify(settings));
+        alert('تم حفظ الإعدادات ✓');
+        
+        // تحديث اسم المتجر في معلومات المستخدم إذا تم تغييره
+        if (currentUserData && settings.shopName !== currentUserData.storeName) {
+          const userStoreSpan = document.getElementById('userStore');
+          if (userStoreSpan) {
+            userStoreSpan.textContent = `المتجر: ${settings.shopName}`;
+          }
+          
+          // تحديث بيانات المستخدم المحلية
+          currentUserData.storeName = settings.shopName;
+          localStorage.setItem('dnrx_user', JSON.stringify({
+            ...currentUserData,
+            storeName: settings.shopName
+          }));
+        }
+      } catch (err) {
+        console.error('خطأ في حفظ الإعدادات:', err);
+        localStorage.setItem('settings_' + currentShopId, JSON.stringify(settings));
+        alert('تم الحفظ محلياً (فشل الاتصال)');
+      }
+    };
+
+    // استعادة الإعدادات الافتراضية
+    window.resetSettings = function() {
+      if (confirm('هل تريد استعادة الإعدادات الافتراضية؟')) {
+        resetToDefaults();
+        alert('تم الاستعادة');
+      }
+    };
+
+    // نسخ احتياطي للبيانات
+    window.backupData = async function() {
+      if (!currentShopId) {
+        alert('❌ لم يتم تحديد المتجر بعد');
+        return;
+      }
+      
+      try {
+        const [productsSnap, salesSnap, settingsSnap] = await Promise.all([
+          get(ref(db, `stores/${currentShopId}/products`)),
+          get(ref(db, `stores/${currentShopId}/sales`)),
+          get(ref(db, `stores/${currentShopId}/settings`))
+        ]);
+
+        const backupData = {
+          timestamp: Date.now(),
+          shopId: currentShopId,
+          storeName: currentUserData?.storeName || "متجري",
+          products: productsSnap.exists() ? productsSnap.val() : {},
+          sales: salesSnap.exists() ? salesSnap.val() : {},
+          settings: settingsSnap.exists() ? settingsSnap.val() : {}
+        };
+
+        localStorage.setItem('system_backup_' + currentShopId + '_' + Date.now(), JSON.stringify(backupData));
+        
+        const dataStr = JSON.stringify(backupData, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup_${currentShopId}_${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        alert('تم إنشاء النسخة الاحتياطية ✓');
+      } catch (err) {
+        console.error('خطأ في النسخ الاحتياطي:', err);
+        alert('فشل في إنشاء النسخة الاحتياطية');
+      }
+    };
+
+    // التحقق من المستخدم عند تحميل الصفحة
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // التحقق مما إذا كنا قد قمنا بالفعل بتوجيه المستخدم
+        if (isRedirecting) {
+          console.log('✅ يتم التوجيه بالفعل، تخطي...');
+          return;
+        }
+        
+        const userInfo = await checkUserAndPermissions(user);
+        
+        // إذا لم يكن المستخدم معتمدًا، قم بتوجيهه
+        if (userInfo.approved === false) {
+          console.log('❌ المستخدم غير معتمد، التوجيه إلى pending.html');
+          isRedirecting = true;
+          window.location.href = 'pending.html';
+          return;
+        }
+        
+        // تحديث واجهة المستخدم
+        updateUIForUser(userInfo);
+        
+        // تحميل الإعدادات الخاصة بالمتجر
+        await loadSettings();
+      } else {
+        // إذا لم يكن هناك مستخدم، قم بتوجيهه إلى صفحة تسجيل الدخول
+        if (!isRedirecting) {
+          console.log('❌ لا يوجد مستخدم، التوجيه إلى login.html');
+          isRedirecting = true;
+          window.location.href = 'login.html';
+        }
+      }
+    });
+  </script>
+</body>
+</html>

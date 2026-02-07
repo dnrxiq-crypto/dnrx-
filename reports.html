@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>التقارير - نظام كاشير</title>
+  <style>
+    /* CSS Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      padding: 16px;
+      background: #fff;
+      color: #000;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #000;
+    }
+    
+    h1 {
+      font-size: 20px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .subtitle {
+      color: #666;
+      font-size: 13px;
+    }
+    
+    /* معلومات المستخدم */
+    .user-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    
+    .user-details {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .user-email {
+      font-weight: bold;
+      color: #000;
+    }
+    
+    .user-store {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+    
+    .user-role {
+      background: #000;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .admin-crown {
+      color: gold;
+    }
+    
+    /* البطاقات الشبكية للتنقل */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .grid-item {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .grid-item:hover {
+      border-color: #000;
+      transform: translateY(-2px);
+    }
+    
+    .grid-icon {
+      font-size: 26px;
+      margin-bottom: 8px;
+      color: #000;
+      display: block;
+    }
+    
+    .grid-title {
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    
+    .grid-desc {
+      font-size: 11px;
+      color: #666;
+    }
+    
+    /* فلاتر التقارير */
+    .filters-section {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .filters-header {
+      font-size: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .filter-group {
+      margin-bottom: 14px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      border-radius: 6px;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #000;
+    }
+    
+    .filter-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .btn-filter {
+      padding: 12px 16px;
+      border: 1px solid #000;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #fff;
+      color: #000;
+      transition: all 0.2s;
+    }
+    
+    .btn-filter:hover {
+      background: #f5f5f5;
+    }
+    
+    .btn-primary {
+      background: #000;
+      color: #fff;
+    }
+    
+    .btn-primary:hover {
+      background: #333;
+    }
+    
+    /* إحصائيات سريعة */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    
+    .stat-label {
+      color: #666;
+      font-size: 12px;
+    }
+    
+    /* الرسوم البيانية */
+    .chart-section {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .chart-title {
+      font-size: 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .chart-container {
+      height: 250px;
+      position: relative;
+      margin: 0 auto;
+    }
+    
+    /* قائمة الفواتير */
+    .sales-section {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .sales-header {
+      font-size: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .sales-count {
+      background: #000;
+      color: #fff;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+    
+    .sales-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .sale-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .sale-card:hover {
+      border-color: #000;
+    }
+    
+    .sale-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .sale-id {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    .sale-date {
+      color: #666;
+      font-size: 12px;
+    }
+    
+    .sale-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+    
+    .sale-items {
+      color: #666;
+      font-size: 13px;
+    }
+    
+    .sale-total {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    .sale-expand {
+      text-align: center;
+      margin-top: 10px;
+      color: #666;
+      font-size: 12px;
+    }
+    
+    .sale-items-detail {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+      display: none;
+    }
+    
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    
+    .items-table th {
+      background: #f5f5f5;
+      padding: 8px;
+      text-align: right;
+      border: 1px solid #ddd;
+    }
+    
+    .items-table td {
+      padding: 8px;
+      border: 1px solid #eee;
+      text-align: right;
+    }
+    
+    /* أزرار التقرير */
+    .report-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .btn-report {
+      padding: 14px 16px;
+      border: 1px solid #000;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #fff;
+      color: #000;
+      transition: all 0.2s;
+    }
+    
+    .btn-report:hover {
+      background: #f5f5f5;
+    }
+    
+    /* زر العودة */
+    .btn-back {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #000;
+      border-radius: 6px;
+      background: #fff;
+      color: #000;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 16px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .btn-back:hover {
+      background: #f5f5f5;
+    }
+    
+    /* حالات خاصة */
+    .empty-state {
+      text-align: center;
+      padding: 40px 16px;
+      color: #666;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    
+    /* التذييل */
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #ddd;
+      color: #666;
+      font-size: 12px;
+    }
+    
+    /* للشاشات الصغيرة جداً */
+    @media (max-width: 350px) {
+      .grid-container,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .filter-buttons,
+      .report-buttons {
+        grid-template-columns: 1fr;
+      }
+      
+      .sale-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+      
+      .sale-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+      
+      body {
+        padding: 12px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-chart-bar"></i> التقارير والإحصائيات</h1>
+      <p class="subtitle">عرض تقارير المبيعات والأرباح والإحصائيات التفصيلية</p>
+    </header>
+    
+    <!-- معلومات المستخدم -->
+    <div class="user-info" id="userInfo" style="display: none;">
+      <div class="user-details">
+        <div>
+          <div class="user-email" id="userEmail">جاري التحميل...</div>
+          <div class="user-store" id="userStore"></div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="user-role" id="userRole">
+          <i class="fas fa-user"></i>
+          <span>مستخدم</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- البطاقات الشبكية للتنقل السريع -->
+    <div class="grid-container">
+      <div class="grid-item" onclick="location.href='pos.html'">
+        <i class="fas fa-cash-register grid-icon"></i>
+        <div class="grid-title">نقطة البيع</div>
+        <div class="grid-desc">بدء البيع</div>
+      </div>
+      
+      <div class="grid-item" onclick="location.href='inventory.html'">
+        <i class="fas fa-boxes grid-icon"></i>
+        <div class="grid-title">المخزون</div>
+        <div class="grid-desc">إدارة المنتجات</div>
+      </div>
+      
+      <div class="grid-item" onclick="location.href='settings.html'">
+        <i class="fas fa-cogs grid-icon"></i>
+        <div class="grid-title">الإعدادات</div>
+        <div class="grid-desc">تعديل الإعدادات</div>
+      </div>
+      
+      <div class="grid-item" onclick="location.href='start.html'">
+        <i class="fas fa-home grid-icon"></i>
+        <div class="grid-title">البداية</div>
+        <div class="grid-desc">لوحة التحكم</div>
+      </div>
+    </div>
+    
+    <!-- فلاتر التقارير -->
+    <div class="filters-section">
+      <h3 class="filters-header">
+        <i class="fas fa-filter"></i> فلترة التقارير
+      </h3>
+      
+      <div class="filter-group">
+        <label>من تاريخ:</label>
+        <input type="date" id="fromDate">
+      </div>
+      
+      <div class="filter-group">
+        <label>إلى تاريخ:</label>
+        <input type="date" id="toDate">
+      </div>
+      
+      <div class="filter-group">
+        <label>نوع التقرير:</label>
+        <select id="reportType">
+          <option value="sales">المبيعات</option>
+          <option value="daily">يومي</option>
+          <option value="weekly">أسبوعي</option>
+          <option value="monthly">شهري</option>
+        </select>
+      </div>
+      
+      <div class="filter-buttons">
+        <button class="btn-filter btn-primary" onclick="applyFilters()">
+          <i class="fas fa-filter"></i> تطبيق
+        </button>
+        <button class="btn-filter" onclick="resetFilters()">
+          <i class="fas fa-redo"></i> إعادة تعيين
+        </button>
+      </div>
+    </div>
+    
+    <!-- إحصائيات سريعة -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="totalSalesCount">0</div>
+        <div class="stat-label">عدد الفواتير</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-value" id="totalRevenue">0 د.ع</div>
+        <div class="stat-label">إجمالي المبيعات</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-value" id="averageSale">0 د.ع</div>
+        <div class="stat-label">متوسط الفاتورة</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-value" id="totalItems">0</div>
+        <div class="stat-label">المنتجات المباعة</div>
+      </div>
+    </div>
+    
+    <!-- أزرار التقرير -->
+    <div class="report-buttons">
+      <button class="btn-report" onclick="exportReport()">
+        <i class="fas fa-download"></i> تصدير
+      </button>
+      <button class="btn-report" onclick="printReport()">
+        <i class="fas fa-print"></i> طباعة
+      </button>
+      <button class="btn-report" onclick="refreshReport()">
+        <i class="fas fa-sync-alt"></i> تحديث
+      </button>
+      <button class="btn-report" onclick="showSummary()">
+        <i class="fas fa-chart-pie"></i> ملخص
+      </button>
+    </div>
+    
+    <!-- الرسم البياني -->
+    <div class="chart-section">
+      <h3 class="chart-title">
+        <i class="fas fa-chart-line"></i> مخطط المبيعات
+      </h3>
+      <div class="chart-container">
+        <canvas id="salesChart"></canvas>
+      </div>
+    </div>
+    
+    <!-- قائمة الفواتير -->
+    <div class="sales-section">
+      <div class="sales-header">
+        <i class="fas fa-receipt"></i> قائمة الفواتير
+        <span class="sales-count" id="salesCount">0</span>
+      </div>
+      
+      <div class="sales-list" id="salesList">
+        <div class="loading">
+          <p>جاري تحميل الفواتير...</p>
+        </div>
+      </div>
+    </div>
+    
+    <button class="btn-back" onclick="location.href='start.html'">
+      <i class="fas fa-arrow-right"></i> رجوع للقائمة الرئيسية
+    </button>
+    
+    <footer>
+      <p>نظام كاشير - التقارير | آخر تحديث: <span id="lastUpdate"></span></p>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+      authDomain: "zio3-8ffdd.firebaseapp.com",
+      databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+      projectId: "zio3-8ffdd",
+      storageBucket: "zio3-8ffdd.firebasestorage.app",
+      messagingSenderId: "560939348415",
+      appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+      measurementId: "G-CVN2B2D0RD"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const firestore = getFirestore(app);
+    
+    // متغيرات لتتبع بيانات المستخدم والمتجر
+    let currentShopId = null;
+    let currentUserData = null;
+    let isRedirecting = false;
+    let allSales = {};
+    let filteredSales = {};
+    let salesChart = null;
+    let reportFilters = {
+      fromDate: null,
+      toDate: null,
+      reportType: 'sales'
+    };
+
+    // التحقق من المستخدم وحالته
+    async function checkUserAndPermissions(user) {
+      try {
+        if (!user) return { isAdmin: false, approved: false };
+        
+        const userEmail = user.email;
+        
+        // الحصول على بيانات المستخدم من localStorage أولاً
+        const savedUser = localStorage.getItem('dnrx_user');
+        if (savedUser) {
+          try {
+            const userData = JSON.parse(savedUser);
+            
+            // التحقق من أن بيانات localStorage تطابق المستخدم الحالي
+            if (userData.email === user.email) {
+              // تحديد shopId من بيانات المستخدم
+              let shopId = userData.shopId || userData.storeId;
+              
+              // إذا لم يكن هناك shopId، إنشاء واحد فريد بناءً على البريد الإلكتروني
+              if (!shopId) {
+                shopId = 'shop_' + user.email.replace(/[^a-zA-Z0-9]/g, '_');
+                // تحديث localStorage بالمعلومات الجديدة
+                userData.shopId = shopId;
+                localStorage.setItem('dnrx_user', JSON.stringify(userData));
+              }
+              
+              currentShopId = shopId;
+              currentUserData = userData;
+              
+              return { 
+                isAdmin: userData.userType === 'admin', 
+                approved: userData.approved === true || userData.approved === undefined,
+                email: userEmail,
+                storeName: userData.storeName || "متجري",
+                shopId: shopId
+              };
+            }
+          } catch (e) {
+            console.warn('❌ خطأ في تحليل بيانات localStorage:', e);
+            localStorage.removeItem('dnrx_user');
+          }
+        }
+        
+        // التحقق من Firestore إذا لم تكن البيانات موجودة في localStorage
+        const userRef = doc(firestore, "dnrx_users", user.uid);
+        const userSnap = await getDoc(userRef);
+        
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          
+          // تحديد shopId من بيانات المستخدم
+          let shopId = userData.shopId || userData.storeId;
+          
+          // إذا لم يكن هناك shopId، إنشاء واحد فريد بناءً على البريد الإلكتروني
+          if (!shopId) {
+            shopId = 'shop_' + user.email.replace(/[^a-zA-Z0-9]/g, '_');
+          }
+          
+          currentShopId = shopId;
+          currentUserData = userData;
+          
+          // حفظ في localStorage للمرة القادمة
+          localStorage.setItem('dnrx_user', JSON.stringify({
+            ...userData,
+            uid: user.uid,
+            email: user.email,
+            shopId: shopId
+          }));
+          
+          return { 
+            isAdmin: userData.userType === "admin" || userEmail === "ashlhl.iq@gmail.com", 
+            approved: userData.approved === true || userData.approved === undefined,
+            email: userEmail,
+            storeName: userData.storeName || "متجري",
+            shopId: shopId
+          };
+        } else {
+          // إذا لم يكن هناك سجل للمستخدم في dnrx_users، إنشاء متجر افتراضي
+          const shopId = 'shop_' + user.email.replace(/[^a-zA-Z0-9]/g, '_');
+          
+          currentShopId = shopId;
+          currentUserData = {
+            storeName: "متجري",
+            email: user.email
+          };
+          
+          return { 
+            isAdmin: userEmail === "ashlhl.iq@gmail.com", 
+            approved: true,
+            email: userEmail,
+            storeName: "متجري",
+            shopId: shopId
+          };
+        }
+        
+      } catch (error) {
+        console.error("❌ خطأ في التحقق من صلاحيات المستخدم:", error);
+        return { 
+          isAdmin: false, 
+          approved: true, 
+          email: user?.email || "غير معروف",
+          storeName: "متجري",
+          shopId: 'defaultShop'
+        };
+      }
+    }
+
+    // تحديث واجهة المستخدم حسب الصلاحيات
+    function updateUIForUser(userInfo) {
+      const userInfoDiv = document.getElementById('userInfo');
+      const userEmailSpan = document.getElementById('userEmail');
+      const userStoreSpan = document.getElementById('userStore');
+      const userRoleSpan = document.getElementById('userRole');
+      
+      if (userInfo.email) {
+        userEmailSpan.textContent = userInfo.email;
+        userInfoDiv.style.display = 'flex';
+      }
+      
+      if (userInfo.storeName) {
+        userStoreSpan.textContent = `المتجر: ${userInfo.storeName}`;
+      }
+      
+      if (userInfo.isAdmin) {
+        userRoleSpan.innerHTML = '<i class="fas fa-crown admin-crown"></i> <span>مسؤول</span>';
+      } else {
+        userRoleSpan.innerHTML = '<i class="fas fa-user"></i> <span>مستخدم</span>';
+      }
+    }
+
+    // تحديث تاريخ آخر تحديث
+    function updateLastUpdateTime() {
+      const now = new Date();
+      const options = { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      };
+      document.getElementById('lastUpdate').textContent = 
+        now.toLocaleDateString('ar-SA') + ' ' + now.toLocaleTimeString('ar-SA', options);
+    }
+
+    // تحميل جميع المبيعات
+    async function loadAllSales() {
+      if (!currentShopId) {
+        console.warn('❌ لم يتم تحديد shopId بعد');
+        return;
+      }
+      
+      const salesListEl = document.getElementById('salesList');
+      salesListEl.innerHTML = '<div class="loading"><p>جاري تحميل الفواتير...</p></div>';
+      
+      try {
+        const dbRef = ref(db);
+        const snap = await get(child(dbRef, `stores/${currentShopId}/sales`));
+        
+        if (snap.exists()) {
+          allSales = snap.val();
+        } else {
+          allSales = {};
+        }
+        
+        // محاولة التحميل من التخزين المحلي
+        if (Object.keys(allSales).length === 0) {
+          const local = localStorage.getItem('sales_' + currentShopId);
+          allSales = local ? JSON.parse(local) : {};
+        }
+        
+        // تطبيق الفلاتر الافتراضية
+        applyFilters();
+        
+        updateLastUpdateTime();
+        
+      } catch (e) {
+        console.warn('خطأ في تحميل المبيعات:', e);
+        const local = localStorage.getItem('sales_' + currentShopId);
+        allSales = local ? JSON.parse(local) : {};
+        applyFilters();
+        updateLastUpdateTime();
+      }
+    }
+
+    // تطبيق الفلاتر
+    window.applyFilters = function() {
+      const fromDateInput = document.getElementById('fromDate').value;
+      const toDateInput = document.getElementById('toDate').value;
+      const reportType = document.getElementById('reportType').value;
+      
+      reportFilters.fromDate = fromDateInput ? new Date(fromDateInput + 'T00:00:00').getTime() : null;
+      reportFilters.toDate = toDateInput ? new Date(toDateInput + 'T23:59:59').getTime() : null;
+      reportFilters.reportType = reportType;
+      
+      // فلترة المبيعات
+      filteredSales = {};
+      
+      Object.keys(allSales).forEach(id => {
+        const sale = allSales[id];
+        const saleTime = sale.createdAt || Date.now();
+        let include = true;
+        
+        if (reportFilters.fromDate && saleTime < reportFilters.fromDate) {
+          include = false;
+        }
+        
+        if (reportFilters.toDate && saleTime > reportFilters.toDate) {
+          include = false;
+        }
+        
+        if (include) {
+          filteredSales[id] = sale;
+        }
+      });
+      
+      renderSalesList();
+      updateStatistics();
+      renderChart();
+    };
+
+    // إعادة تعيين الفلاتر
+    window.resetFilters = function() {
+      document.getElementById('fromDate').value = '';
+      document.getElementById('toDate').value = '';
+      document.getElementById('reportType').value = 'sales';
+      
+      reportFilters = {
+        fromDate: null,
+        toDate: null,
+        reportType: 'sales'
+      };
+      
+      filteredSales = { ...allSales };
+      renderSalesList();
+      updateStatistics();
+      renderChart();
+    };
+
+    // عرض قائمة الفواتير
+    function renderSalesList() {
+      const salesListEl = document.getElementById('salesList');
+      const salesCountEl = document.getElementById('salesCount');
+      const sales = Object.entries(filteredSales);
+      
+      salesCountEl.textContent = sales.length;
+      
+      if (sales.length === 0) {
+        salesListEl.innerHTML = '<div class="empty-state"><p>لا توجد فواتير في الفترة المحددة</p></div>';
+        return;
+      }
+      
+      // ترتيب من الأحدث للأقدم
+      sales.sort((a, b) => {
+        return (b[1].createdAt || 0) - (a[1].createdAt || 0);
+      });
+      
+      salesListEl.innerHTML = '';
+      
+      sales.forEach(([id, sale]) => {
+        const saleDiv = document.createElement('div');
+        saleDiv.className = 'sale-card';
+        saleDiv.onclick = () => toggleSaleDetails(id);
+        
+        const saleDate = new Date(sale.createdAt || Date.now());
+        const dateStr = saleDate.toLocaleDateString('ar-SA');
+        const timeStr = saleDate.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+        
+        let totalItems = 0;
+        if (sale.items) {
+          totalItems = Object.values(sale.items).reduce((sum, item) => sum + (item.qty || 0), 0);
+        }
+        
+        saleDiv.innerHTML = `
+          <div class="sale-header">
+            <div class="sale-id">فاتورة #${id.substring(0, 8)}</div>
+            <div class="sale-date">${dateStr} - ${timeStr}</div>
+          </div>
+          <div class="sale-details">
+            <div class="sale-items">${totalItems} منتج</div>
+            <div class="sale-total">${Number(sale.total || 0).toFixed(2)} د.ع</div>
+          </div>
+          <div class="sale-expand">
+            <i class="fas fa-chevron-down"></i> اضغط لعرض التفاصيل
+          </div>
+          <div class="sale-items-detail" id="saleDetail_${id}"></div>
+        `;
+        
+        salesListEl.appendChild(saleDiv);
+        
+        // تحضير تفاصيل الفاتورة
+        prepareSaleDetails(id, sale);
+      });
+    }
+
+    // تحضير تفاصيل الفاتورة
+    function prepareSaleDetails(id, sale) {
+      const detailDiv = document.getElementById(`saleDetail_${id}`);
+      
+      if (!sale.items || Object.keys(sale.items).length === 0) {
+        detailDiv.innerHTML = '<p style="color: #666; text-align: center;">لا توجد تفاصيل لهذه الفاتورة</p>';
+        return;
+      }
+      
+      let itemsHTML = '<table class="items-table">';
+      itemsHTML += `
+        <thead>
+          <tr>
+            <th>المنتج</th>
+            <th>الكمية</th>
+            <th>السعر</th>
+            <th>الإجمالي</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+      
+      Object.values(sale.items).forEach(item => {
+        const itemTotal = (item.price || 0) * (item.qty || 0);
+        itemsHTML += `
+          <tr>
+            <td>${item.name || 'غير معروف'}</td>
+            <td>${item.qty || 0}</td>
+            <td>${Number(item.price || 0).toFixed(2)} د.ع</td>
+            <td>${itemTotal.toFixed(2)} د.ع</td>
+          </tr>
+        `;
+      });
+      
+      itemsHTML += `
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" style="text-align: left; font-weight: bold;">المجموع:</td>
+            <td>${Number(sale.subtotal || 0).toFixed(2)} د.ع</td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align: left; font-weight: bold;">الخصم:</td>
+            <td>${Number(sale.discount || 0).toFixed(2)} د.ع</td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align: left; font-weight: bold;">الإجمالي النهائي:</td>
+            <td style="font-weight: bold;">${Number(sale.total || 0).toFixed(2)} د.ع</td>
+          </tr>
+        </tfoot>
+      </table>`;
+      
+      detailDiv.innerHTML = itemsHTML;
+    }
+
+    // تبديل عرض تفاصيل الفاتورة
+    window.toggleSaleDetails = function(id) {
+      const detailDiv = document.getElementById(`saleDetail_${id}`);
+      const saleCard = detailDiv.closest('.sale-card');
+      const expandIcon = saleCard.querySelector('.sale-expand i');
+      
+      if (detailDiv.style.display === 'block') {
+        detailDiv.style.display = 'none';
+        expandIcon.className = 'fas fa-chevron-down';
+      } else {
+        detailDiv.style.display = 'block';
+        expandIcon.className = 'fas fa-chevron-up';
+      }
+    };
+
+    // تحديث الإحصائيات
+    function updateStatistics() {
+      const sales = Object.values(filteredSales);
+      const totalSalesCount = sales.length;
+      
+      let totalRevenue = 0;
+      let totalItemsSold = 0;
+      
+      sales.forEach(sale => {
+        totalRevenue += Number(sale.total || 0);
+        
+        if (sale.items) {
+          totalItemsSold += Object.values(sale.items).reduce((sum, item) => sum + (item.qty || 0), 0);
+        }
+      });
+      
+      const averageSale = totalSalesCount > 0 ? totalRevenue / totalSalesCount : 0;
+      
+      document.getElementById('totalSalesCount').textContent = totalSalesCount;
+      document.getElementById('totalRevenue').textContent = totalRevenue.toFixed(2) + ' د.ع';
+      document.getElementById('averageSale').textContent = averageSale.toFixed(2) + ' د.ع';
+      document.getElementById('totalItems').textContent = totalItemsSold;
+    }
+
+    // رسم الرسم البياني
+    function renderChart() {
+      const sales = Object.values(filteredSales);
+      
+      if (sales.length === 0) {
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        if (salesChart) {
+          salesChart.destroy();
+        }
+        
+        salesChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['لا توجد بيانات'],
+            datasets: [{
+              label: 'المبيعات',
+              data: [0],
+              backgroundColor: '#f0f0f0'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: 'لا توجد بيانات للعرض'
+              }
+            }
+          }
+        });
+        return;
+      }
+      
+      // تجميع البيانات حسب اليوم
+      const dailyData = {};
+      sales.forEach(sale => {
+        const date = new Date(sale.createdAt || Date.now());
+        const dateStr = date.toLocaleDateString('ar-SA');
+        
+        if (!dailyData[dateStr]) {
+          dailyData[dateStr] = 0;
+        }
+        
+        dailyData[dateStr] += Number(sale.total || 0);
+      });
+      
+      const labels = Object.keys(dailyData).slice(-7); // آخر 7 أيام
+      const data = labels.map(label => dailyData[label] || 0);
+      
+      const ctx = document.getElementById('salesChart').getContext('2d');
+      
+      if (salesChart) {
+        salesChart.destroy();
+      }
+      
+      salesChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'المبيعات (د.ع)',
+            data: data,
+            backgroundColor: '#000',
+            borderColor: '#000',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                font: {
+                  size: 12
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return value.toFixed(0) + ' د.ع';
+                }
+              }
+            },
+            x: {
+              ticks: {
+                maxRotation: 45,
+                minRotation: 45
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // تصدير التقرير
+    window.exportReport = function() {
+      if (!currentShopId) {
+        alert('❌ لم يتم تحديد المتجر بعد');
+        return;
+      }
+      
+      const sales = Object.values(filteredSales);
+      
+      if (sales.length === 0) {
+        alert('لا توجد بيانات للتصدير');
+        return;
+      }
+      
+      let csvContent = 'رقم الفاتورة,التاريخ,الوقت,عدد المنتجات,المجموع,الخصم,الإجمالي\n';
+      
+      sales.forEach((sale, index) => {
+        const saleId = Object.keys(filteredSales)[index];
+        const saleDate = new Date(sale.createdAt || Date.now());
+        const dateStr = saleDate.toLocaleDateString('ar-SA');
+        const timeStr = saleDate.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+        
+        let totalItems = 0;
+        if (sale.items) {
+          totalItems = Object.values(sale.items).reduce((sum, item) => sum + (item.qty || 0), 0);
+        }
+        
+        csvContent += `"${saleId}","${dateStr}","${timeStr}","${totalItems}","${sale.subtotal || 0}","${sale.discount || 0}","${sale.total || 0}"\n`;
+      });
+      
+      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      
+      const fromDate = document.getElementById('fromDate').value || 'بداية';
+      const toDate = document.getElementById('toDate').value || 'نهاية';
+      a.download = `تقرير_مبيعات_${currentUserData?.storeName || currentShopId}_${fromDate}_إلى_${toDate}.csv`;
+      
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+
+    // طباعة التقرير
+    window.printReport = function() {
+      window.print();
+    };
+
+    // تحديث التقرير
+    window.refreshReport = async function() {
+      if (!currentShopId) {
+        alert('❌ لم يتم تحديد المتجر بعد');
+        return;
+      }
+      
+      await loadAllSales();
+      alert('تم تحديث البيانات');
+    };
+
+    // عرض ملخص
+    window.showSummary = function() {
+      const sales = Object.values(filteredSales);
+      if (sales.length === 0) {
+        alert('لا توجد بيانات لعرض الملخص');
+        return;
+      }
+      
+      let totalRevenue = 0;
+      let totalItems = 0;
+      let averageSale = 0;
+      
+      sales.forEach(sale => {
+        totalRevenue += Number(sale.total || 0);
+        if (sale.items) {
+          totalItems += Object.values(sale.items).reduce((sum, item) => sum + (item.qty || 0), 0);
+        }
+      });
+      
+      averageSale = sales.length > 0 ? totalRevenue / sales.length : 0;
+      
+      const summary = `
+        ملخص التقرير:
+        
+        المتجر: ${currentUserData?.storeName || currentShopId}
+        عدد الفواتير: ${sales.length}
+        إجمالي المبيعات: ${totalRevenue.toFixed(2)} د.ع
+        المنتجات المباعة: ${totalItems}
+        متوسط الفاتورة: ${averageSale.toFixed(2)} د.ع
+        
+        الفترة: ${document.getElementById('fromDate').value || 'بداية'} إلى ${document.getElementById('toDate').value || 'نهاية'}
+      `;
+      
+      alert(summary);
+    };
+
+    // التحقق من المستخدم عند تحميل الصفحة
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // التحقق مما إذا كنا قد قمنا بالفعل بتوجيه المستخدم
+        if (isRedirecting) {
+          console.log('✅ يتم التوجيه بالفعل، تخطي...');
+          return;
+        }
+        
+        const userInfo = await checkUserAndPermissions(user);
+        
+        // إذا لم يكن المستخدم معتمدًا، قم بتوجيهه
+        if (userInfo.approved === false) {
+          console.log('❌ المستخدم غير معتمد، التوجيه إلى pending.html');
+          isRedirecting = true;
+          window.location.href = 'pending.html';
+          return;
+        }
+        
+        // تحديث واجهة المستخدم
+        updateUIForUser(userInfo);
+        
+        // تحميل جميع المبيعات
+        await loadAllSales();
+      } else {
+        // إذا لم يكن هناك مستخدم، قم بتوجيهه إلى صفحة تسجيل الدخول
+        if (!isRedirecting) {
+          console.log('❌ لا يوجد مستخدم، التوجيه إلى login.html');
+          isRedirecting = true;
+          window.location.href = 'login.html';
+        }
+      }
+    });
+  </script>
+</body>
+</html>

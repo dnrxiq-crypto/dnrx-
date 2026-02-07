@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرئيسية - نظام كاشير</title>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            padding: 16px;
+            background: #fff;
+            color: #000;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #000;
+        }
+        
+        h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 13px;
+        }
+        
+        /* معلومات المستخدم */
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .user-details {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-email {
+            font-weight: bold;
+            color: #000;
+        }
+        
+        .user-store {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .user-role {
+            background: #000;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .admin-crown {
+            color: gold;
+        }
+        
+        /* زر تسجيل الخروج الصغير */
+        .logout-btn-small {
+            background: transparent;
+            border: none;
+            color: #666;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logout-btn-small:hover {
+            color: #c62828;
+            background: #ffebee;
+        }
+        
+        /* التاريخ والوقت */
+        .datetime-section {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .datetime-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .datetime-item {
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 12px;
+        }
+        
+        .datetime-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .datetime-value {
+            font-size: 15px;
+            font-weight: bold;
+        }
+        
+        /* إحصائيات سريعة */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        /* البطاقات الشبكية للوظائف الرئيسية */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .dashboard-card:hover {
+            border-color: #000;
+            transform: translateY(-2px);
+        }
+        
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #000;
+            display: block;
+        }
+        
+        .card-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        
+        .card-desc {
+            color: #666;
+            font-size: 11px;
+            margin-bottom: 10px;
+            height: 32px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .card-access {
+            color: #000;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        /* الإجراءات السريعة */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .action-btn {
+            padding: 12px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            background: #fff;
+            color: #000;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: #f5f5f5;
+        }
+        
+        .action-btn-primary {
+            background: #000;
+            color: #fff;
+        }
+        
+        .action-btn-primary:hover {
+            background: #333;
+        }
+        
+        /* النشاطات الأخيرة */
+        .activity-section {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .activity-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        
+        .activity-time {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        /* زر العودة */
+        .btn-back {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            background: #fff;
+            color: #000;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 16px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-back:hover {
+            background: #f5f5f5;
+        }
+        
+        /* التذييل */
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .version {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        
+        /* حالات خاصة */
+        .empty-state {
+            text-align: center;
+            padding: 30px 16px;
+            color: #666;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        /* إضافة تنسيق للأدمن */
+        .admin-panel-btn {
+            background: #000;
+            color: #fff;
+        }
+        
+        .admin-panel-btn:hover {
+            background: #333;
+        }
+        
+        /* للشاشات الصغيرة جداً */
+        @media (max-width: 350px) {
+            .dashboard-grid,
+            .quick-actions,
+            .stats-grid,
+            .datetime-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 12px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cash-register"></i> نظام كاشير</h1>
+            <p class="subtitle">نظام إدارة المبيعات والمخزون المتكامل</p>
+        </header>
+        
+        <!-- معلومات المستخدم -->
+        <div class="user-info" id="userInfo" style="display: none;">
+            <div class="user-details">
+                <div>
+                    <div class="user-email" id="userEmail">جاري التحميل...</div>
+                    <div class="user-store" id="userStore"></div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="user-role" id="userRole">
+                    <i class="fas fa-user"></i>
+                    <span>مستخدم</span>
+                </div>
+                <!-- زر تسجيل الخروج الصغير -->
+                <button class="logout-btn-small" id="logoutBtn" title="تسجيل خروج">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- التاريخ والوقت -->
+        <div class="datetime-section">
+            <div class="datetime-grid">
+                <div class="datetime-item">
+                    <div class="datetime-label">
+                        <i class="fas fa-calendar-day"></i> تاريخ اليوم
+                    </div>
+                    <div class="datetime-value" id="currentDate"></div>
+                </div>
+                
+                <div class="datetime-item">
+                    <div class="datetime-label">
+                        <i class="fas fa-clock"></i> الوقت الحالي
+                    </div>
+                    <div class="datetime-value" id="currentTime"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- الإحصائيات السريعة -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalProducts">0</div>
+                <div class="stat-label">المنتجات في المخزون</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-value" id="todaySales">0 د.ع</div>
+                <div class="stat-label">مبيعات اليوم</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-value" id="lowStock">0</div>
+                <div class="stat-label">منتجات مخزون منخفض</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-value" id="totalSales">0</div>
+                <div class="stat-label">فواتير الشهر</div>
+            </div>
+        </div>
+        
+        <!-- الوظائف الرئيسية -->
+        <h3 class="section-title">
+            <i class="fas fa-rocket"></i> الوظائف الرئيسية
+        </h3>
+        
+        <div class="dashboard-grid">
+            <div class="dashboard-card" onclick="location.href='pos.html'">
+                <i class="fas fa-shopping-cart card-icon"></i>
+                <div class="card-title">نقطة البيع (POS)</div>
+                <div class="card-desc">إتمام عمليات البيع وإصدار الفواتير</div>
+                <div class="card-access">
+                    <i class="fas fa-arrow-left"></i> انقر للدخول
+                </div>
+            </div>
+            
+            <div class="dashboard-card" onclick="location.href='inventory.html'">
+                <i class="fas fa-boxes-stacked card-icon"></i>
+                <div class="card-title">إدارة المخزون</div>
+                <div class="card-desc">إضافة وتعديل وحذف المنتجات</div>
+                <div class="card-access">
+                    <i class="fas fa-arrow-left"></i> انقر للدخول
+                </div>
+            </div>
+            
+            <div class="dashboard-card" onclick="location.href='reports.html'">
+                <i class="fas fa-chart-line card-icon"></i>
+                <div class="card-title">التقارير والإحصائيات</div>
+                <div class="card-desc">عرض تقارير المبيعات والأرباح</div>
+                <div class="card-access">
+                    <i class="fas fa-arrow-left"></i> انقر للدخول
+                </div>
+            </div>
+            
+            <div class="dashboard-card" onclick="location.href='settings.html'">
+                <i class="fas fa-cogs card-icon"></i>
+                <div class="card-title">الإعدادات</div>
+                <div class="card-desc">تعديل إعدادات النظام والمتجر</div>
+                <div class="card-access">
+                    <i class="fas fa-arrow-left"></i> انقر للدخول
+                </div>
+            </div>
+            
+            <!-- بطاقة لوحة الأدمن - تظهر فقط للمسؤولين -->
+            <div class="dashboard-card" id="adminPanelBtn" onclick="location.href='admin.html'" style="display: none;">
+                <i class="fas fa-user-shield card-icon"></i>
+                <div class="card-title">لوحة الأدمن</div>
+                <div class="card-desc">إدارة المستخدمين والصلاحيات</div>
+                <div class="card-access">
+                    <i class="fas fa-arrow-left"></i> انقر للدخول
+                </div>
+            </div>
+        </div>
+        
+        <!-- الإجراءات السريعة -->
+        <div class="quick-actions">
+            <button class="action-btn action-btn-primary" onclick="location.href='pos.html'">
+                <i class="fas fa-bolt"></i> بدء بيع سريع
+            </button>
+            
+            <button class="action-btn" onclick="window.print()">
+                <i class="fas fa-print"></i> طباعة التقارير
+            </button>
+            
+            <button class="action-btn" onclick="backupSystem()">
+                <i class="fas fa-download"></i> نسخ احتياطي
+            </button>
+            
+            <button class="action-btn" onclick="location.reload()">
+                <i class="fas fa-sync-alt"></i> تحديث البيانات
+            </button>
+            
+            <!-- زر لوحة الأدمن - يظهر فقط للمسؤولين -->
+            <button class="action-btn admin-panel-btn" id="adminQuickBtn" onclick="location.href='admin.html'" style="display: none;">
+                <i class="fas fa-user-shield"></i> لوحة الأدمن
+            </button>
+        </div>
+        
+        <!-- النشاطات الأخيرة -->
+        <div class="activity-section">
+            <h3 class="section-title">
+                <i class="fas fa-history"></i> النشاطات الأخيرة
+            </h3>
+            
+            <div class="activity-list" id="activityList">
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">جاري تحميل النشاطات...</div>
+                        <div class="activity-time">الآن</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="btn-back" onclick="location.href='start.html'">
+            <i class="fas fa-arrow-right"></i> الذهاب للبدء السريع
+        </button>
+        
+        <footer>
+            <p>نظام كاشير الإصدار 1.0</p>
+            <p class="version">© 2026 جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+        import { getDatabase, ref, get, child, set } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+            authDomain: "zio3-8ffdd.firebaseapp.com",
+            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+            projectId: "zio3-8ffdd",
+            storageBucket: "zio3-8ffdd.firebasestorage.app",
+            messagingSenderId: "560939348415",
+            appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+            measurementId: "G-CVN2B2D0RD"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const firestore = getFirestore(app);
+        
+        // متغيرات لتتبع بيانات المستخدم والمتجر
+        let currentShopId = null;
+        let currentUserData = null;
+        let isRedirecting = false;
+
+        // دالة تسجيل الخروج
+        async function handleLogout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                try {
+                    await signOut(auth);
+                    localStorage.removeItem('dnrx_user');
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error('❌ خطأ في تسجيل الخروج:', error);
+                    alert('حدث خطأ أثناء تسجيل الخروج');
+                }
+            }
+        }
+
+        // التحقق من المستخدم وحالته
+        async function checkUserAndPermissions(user) {
+            try {
+                if (!user) return { isAdmin: false, approved: false };
+                
+                const userEmail = user.email;
+                
+                // الحصول على بيانات المستخدم من localStorage أولاً
+                const savedUser = localStorage.getItem('dnrx_user');
+                if (savedUser) {
+                    try {
+                        const userData = JSON.parse(savedUser);
+                        
+                        // التحقق من أن بيانات localStorage تطابق المستخدم الحالي
+                        if (userData.email === user.email) {
+                            // تحديد shopId من بيانات المستخدم
+                            let shopId = userData.shopId || userData.storeId;
+                            
+                            // إذا لم يكن هناك shopId، إنشاء واحد فريد بناءً على البريد الإلكتروني
+                            if (!shopId) {
+                                shopId = 'shop_' + user.email.replace(/[^a-zA-Z0-9]/g, '_');
+                                // تحديث localStorage بالمعلومات الجديدة
+                                userData.shopId = shopId;
+                                localStorage.setItem('dnrx_user', JSON.stringify(userData));
+                            }
+                            
+                            currentShopId = shopId;
+                            currentUserData = userData;
+                            
+                            return { 
+                                isAdmin: userData.userType === 'admin', 
+                                approved: userData.approved === true || userData.approved === undefined,
+                                email: userEmail,
+                                storeName: userData.storeName || "متجري",
+                                shopId: shopId
+                            };
+                        }
+                    } catch (e) {
+                        console.warn('❌ خطأ في تحليل بيانات localStorage:', e);
+                        localStorage.removeItem('dnrx_user');
+                    }
+                }
+                
+                // التحقق من Firestore إذا لم تكن البيانات موجودة في localStorage
+                const userRef = doc(firestore, "dnrx_users", user.uid);
+                const userSnap = await getDoc(userRef);
+                
+                if (userSnap.exists()) {
+                    const userData = userSnap.data();
+                    
+                    // تحديد shopId من بيانات المستخدم
+                    let shopId = userData.shopId || userData.storeId;
+                    
+                    // إذا لم يكن هناك shopId، إنشاء واحد فريد بناءً على البريد الإلكتروني
+                    if (!shopId) {
+                        shopId = 'shop_' + user.email.replace(/[^a-zA-Z0-9]/g, '_');
+                    }
+                    
+                    currentShopId = shopId;
+                    currentUserData = userData;
+                    
+                    // حفظ في localStorage للمرة القادمة
+                    localStorage.setItem('dnrx_user', JSON.stringify({
+                        ...userData,
+                        uid: user.uid,
+                        email: user.email,
+                        shopId: shopId
+                    }));
+                    
+                    return { 
+                        isAdmin: userData.userType === "admin" || userEmail === "ashlhl.iq@gmail.com", 
+                        approved: userData.approved === true || userData.approved === undefined,
+                        email: userEmail,
+                        storeName: userData.storeName || "متجري",
+                        shopId: shopId
+                    };
+                } else {
+                    // إذا لم يكن هناك سجل للمستخدم في dnrx_users، إنشاء متجر افتراضي
+                    const shopId = 'shop_' + user.email.replace(/[^a-zA-Z0-9]/g, '_');
+                    
+                    currentShopId = shopId;
+                    currentUserData = {
+                        storeName: "متجري",
+                        email: user.email
+                    };
+                    
+                    return { 
+                        isAdmin: userEmail === "ashlhl.iq@gmail.com", 
+                        approved: true,
+                        email: userEmail,
+                        storeName: "متجري",
+                        shopId: shopId
+                    };
+                }
+                
+            } catch (error) {
+                console.error("❌ خطأ في التحقق من صلاحيات المستخدم:", error);
+                return { 
+                    isAdmin: false, 
+                    approved: true, 
+                    email: user?.email || "غير معروف",
+                    storeName: "متجري",
+                    shopId: 'defaultShop'
+                };
+            }
+        }
+
+        // تحديث واجهة المستخدم حسب الصلاحيات
+        function updateUIForUser(userInfo) {
+            const userInfoDiv = document.getElementById('userInfo');
+            const userEmailSpan = document.getElementById('userEmail');
+            const userStoreSpan = document.getElementById('userStore');
+            const userRoleSpan = document.getElementById('userRole');
+            const adminPanelBtn = document.getElementById('adminPanelBtn');
+            const adminQuickBtn = document.getElementById('adminQuickBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            if (userInfo.email) {
+                userEmailSpan.textContent = userInfo.email;
+                userInfoDiv.style.display = 'flex';
+            }
+            
+            if (userInfo.storeName) {
+                userStoreSpan.textContent = `المتجر: ${userInfo.storeName}`;
+            }
+            
+            if (userInfo.isAdmin) {
+                userRoleSpan.innerHTML = '<i class="fas fa-crown admin-crown"></i> <span>مسؤول</span>';
+                
+                if (adminPanelBtn) adminPanelBtn.style.display = 'block';
+                if (adminQuickBtn) adminQuickBtn.style.display = 'flex';
+            } else {
+                userRoleSpan.innerHTML = '<i class="fas fa-user"></i> <span>مستخدم</span>';
+            }
+            
+            // إضافة حدث النقر لزر تسجيل الخروج
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', handleLogout);
+            }
+        }
+
+        // عرض التاريخ والوقت
+        function updateDateTime() {
+            const now = new Date();
+            
+            const dateOptions = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('currentDate').textContent = 
+                now.toLocaleDateString('ar-SA', dateOptions);
+            
+            const timeOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleTimeString('ar-SA', timeOptions);
+        }
+
+        // تحديث كل ثانية
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // إنشاء متجر جديد إذا لم يكن موجوداً
+        async function createShopIfNotExists(shopId, storeName, userEmail) {
+            try {
+                const shopRef = ref(db, `stores/${shopId}`);
+                const shopSnap = await get(shopRef);
+                
+                if (!shopSnap.exists()) {
+                    // إنشاء هيكل أساسي للمتجر
+                    const shopData = {
+                        info: {
+                            createdAt: Date.now(),
+                            storeName: storeName || "متجري",
+                            ownerEmail: userEmail || "غير معروف",
+                            lastUpdated: Date.now()
+                        },
+                        settings: {
+                            currency: "د.ع",
+                            taxRate: 0,
+                            language: "ar"
+                        }
+                    };
+                    
+                    await set(ref(db, `stores/${shopId}`), shopData);
+                    console.log("✅ تم إنشاء متجر جديد:", shopId);
+                }
+            } catch (error) {
+                console.error("❌ خطأ في إنشاء المتجر:", error);
+            }
+        }
+
+        // تحميل إحصائيات المنتجات
+        async function loadProductStats() {
+            if (!currentShopId) {
+                console.warn('❌ لم يتم تحديد shopId بعد');
+                return;
+            }
+            
+            try {
+                const snap = await get(child(ref(db), `stores/${currentShopId}/products`));
+                const products = snap.exists() ? snap.val() : {};
+                const totalProducts = Object.keys(products).length;
+                
+                let lowStockCount = 0;
+                Object.values(products).forEach(product => {
+                    const stock = parseInt(product.stock || 0);
+                    if (stock > 0 && stock < 10) {
+                        lowStockCount++;
+                    }
+                });
+                
+                document.getElementById('totalProducts').textContent = totalProducts;
+                document.getElementById('lowStock').textContent = lowStockCount;
+                
+                localStorage.setItem('products_' + currentShopId, JSON.stringify(products));
+            } catch (e) {
+                console.warn('خطأ في تحميل إحصائيات المنتجات:', e);
+                const local = localStorage.getItem('products_' + currentShopId);
+                if (local) {
+                    const products = JSON.parse(local);
+                    const totalProducts = Object.keys(products).length;
+                    
+                    let lowStockCount = 0;
+                    Object.values(products).forEach(product => {
+                        const stock = parseInt(product.stock || 0);
+                        if (stock > 0 && stock < 10) {
+                            lowStockCount++;
+                        }
+                    });
+                    
+                    document.getElementById('totalProducts').textContent = totalProducts;
+                    document.getElementById('lowStock').textContent = lowStockCount;
+                }
+            }
+        }
+
+        // تحميل إحصائيات المبيعات
+        async function loadSalesStats() {
+            if (!currentShopId) {
+                console.warn('❌ لم يتم تحديد shopId بعد');
+                return;
+            }
+            
+            try {
+                const today = new Date();
+                const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+                const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).getTime();
+                
+                const snap = await get(child(ref(db), `stores/${currentShopId}/sales`));
+                
+                let todayRevenue = 0;
+                let monthCount = 0;
+                
+                if (snap.exists()) {
+                    const sales = snap.val();
+                    
+                    Object.values(sales).forEach(sale => {
+                        const saleTime = sale.createdAt || 0;
+                        const saleTotal = Number(sale.total || 0);
+                        
+                        if (saleTime >= todayStart) {
+                            todayRevenue += saleTotal;
+                        }
+                        
+                        if (saleTime >= monthStart) {
+                            monthCount++;
+                        }
+                    });
+                }
+                
+                document.getElementById('todaySales').textContent = todayRevenue.toFixed(2) + ' د.ع';
+                document.getElementById('totalSales').textContent = monthCount;
+                
+                localStorage.setItem('salesStats_' + currentShopId, JSON.stringify({
+                    todaySales: todayRevenue,
+                    monthCount: monthCount,
+                    lastUpdate: Date.now()
+                }));
+                
+            } catch (e) {
+                console.warn('خطأ في تحميل إحصائيات المبيعات:', e);
+                const local = localStorage.getItem('salesStats_' + currentShopId);
+                if (local) {
+                    const stats = JSON.parse(local);
+                    document.getElementById('todaySales').textContent = (stats.todaySales || 0).toFixed(2) + ' د.ع';
+                    document.getElementById('totalSales').textContent = stats.monthCount || 0;
+                }
+            }
+        }
+
+        // تحميل النشاطات الأخيرة
+        async function loadRecentActivities() {
+            if (!currentShopId) {
+                console.warn('❌ لم يتم تحديد shopId بعد');
+                return;
+            }
+            
+            const activityListEl = document.getElementById('activityList');
+            
+            try {
+                const salesSnap = await get(child(ref(db), `stores/${currentShopId}/sales`));
+                
+                const activities = [];
+                
+                if (salesSnap.exists()) {
+                    const sales = salesSnap.val();
+                    const saleEntries = Object.entries(sales);
+                    
+                    saleEntries.sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+                    
+                    saleEntries.slice(0, 3).forEach(([id, sale]) => {
+                        const saleDate = new Date(sale.createdAt || Date.now());
+                        const timeStr = saleDate.toLocaleTimeString('ar-SA', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        });
+                        
+                        let itemCount = 0;
+                        if (sale.items) {
+                            itemCount = Object.values(sale.items).reduce((sum, item) => sum + (item.qty || 0), 0);
+                        }
+                        
+                        activities.push({
+                            type: 'sale',
+                            icon: 'fas fa-shopping-cart',
+                            text: `تمت عملية بيع: ${itemCount} منتج بقيمة ${Number(sale.total || 0).toFixed(2)} د.ع`,
+                            time: timeStr
+                        });
+                    });
+                }
+                
+                activities.push({
+                    type: 'system',
+                    icon: 'fas fa-info-circle',
+                    text: `تم تحميل بيانات المتجر: ${currentUserData?.storeName || "متجري"}`,
+                    time: 'الآن'
+                });
+                
+                activityListEl.innerHTML = '';
+                
+                activities.forEach(activity => {
+                    const activityDiv = document.createElement('div');
+                    activityDiv.className = 'activity-item';
+                    activityDiv.innerHTML = `
+                        <div class="activity-icon">
+                            <i class="${activity.icon}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">${activity.text}</div>
+                            <div class="activity-time">${activity.time}</div>
+                        </div>
+                    `;
+                    activityListEl.appendChild(activityDiv);
+                });
+                
+            } catch (e) {
+                console.warn('خطأ في تحميل النشاطات:', e);
+                activityListEl.innerHTML = `
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">لا يمكن تحميل النشاطات. تحقق من الاتصال.</div>
+                            <div class="activity-time">الآن</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // نسخ احتياطي للنظام
+        window.backupSystem = async function() {
+            if (!currentShopId) {
+                alert('❌ لم يتم تحديد المتجر بعد');
+                return;
+            }
+            
+            try {
+                const [productsSnap, salesSnap, settingsSnap] = await Promise.all([
+                    get(ref(db, `stores/${currentShopId}/products`)),
+                    get(ref(db, `stores/${currentShopId}/sales`)),
+                    get(ref(db, `stores/${currentShopId}/settings`))
+                ]);
+
+                const backupData = {
+                    timestamp: Date.now(),
+                    date: new Date().toLocaleString('ar-SA'),
+                    shopId: currentShopId,
+                    storeName: currentUserData?.storeName || "متجري",
+                    products: productsSnap.exists() ? productsSnap.val() : {},
+                    sales: salesSnap.exists() ? salesSnap.val() : {},
+                    settings: settingsSnap.exists() ? settingsSnap.val() : {}
+                };
+
+                localStorage.setItem('system_backup_' + currentShopId + '_' + Date.now(), JSON.stringify(backupData));
+                
+                const dataStr = JSON.stringify(backupData, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `backup_${currentShopId}_${new Date().toISOString().slice(0,10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                alert('تم إنشاء النسخة الاحتياطية بنجاح ✓');
+                
+                const activityList = document.getElementById('activityList');
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('ar-SA', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                const backupActivity = document.createElement('div');
+                backupActivity.className = 'activity-item';
+                backupActivity.innerHTML = `
+                    <div class="activity-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">تم إنشاء نسخة احتياطية للمتجر: ${currentUserData?.storeName || "متجري"}</div>
+                        <div class="activity-time">${timeStr}</div>
+                    </div>
+                `;
+                
+                activityList.insertBefore(backupActivity, activityList.firstChild);
+                
+            } catch (err) {
+                console.error('خطأ في النسخ الاحتياطي:', err);
+                alert('فشل في إنشاء النسخة الاحتياطية. تحقق من الاتصال.');
+            }
+        };
+
+        // التحقق من الاتصال
+        function checkConnection() {
+            if (!navigator.onLine) {
+                console.warn('أنت غير متصل بالإنترنت. بعض الميزات قد لا تعمل.');
+            }
+        }
+        
+        // الاستماع لتغير حالة الاتصال
+        window.addEventListener('online', function() {
+            console.log('تم استعادة الاتصال');
+            const activityList = document.getElementById('activityList');
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ar-SA', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            const connectionActivity = document.createElement('div');
+            connectionActivity.className = 'activity-item';
+            connectionActivity.innerHTML = `
+                <div class="activity-icon">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-text">تم استعادة الاتصال بالإنترنت</div>
+                    <div class="activity-time">${timeStr}</div>
+                </div>
+            `;
+            
+            activityList.insertBefore(connectionActivity, activityList.firstChild);
+        });
+        
+        window.addEventListener('offline', function() {
+            console.warn('فقدت الاتصال');
+            alert('فقدت الاتصال بالإنترنت. بعض الميزات قد لا تعمل.');
+        });
+
+        // التحقق من المستخدم عند تحميل الصفحة
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // التحقق مما إذا كنا قد قمنا بالفعل بتوجيه المستخدم
+                if (isRedirecting) {
+                    console.log('✅ يتم التوجيه بالفعل، تخطي...');
+                    return;
+                }
+                
+                const userInfo = await checkUserAndPermissions(user);
+                
+                // إذا لم يكن المستخدم معتمدًا، قم بتوجيهه
+                if (userInfo.approved === false) {
+                    console.log('❌ المستخدم غير معتمد، التوجيه إلى pending.html');
+                    isRedirecting = true;
+                    window.location.href = 'pending.html';
+                    return;
+                }
+                
+                // تحديث واجهة المستخدم
+                updateUIForUser(userInfo);
+                
+                // إنشاء المتجر إذا لم يكن موجوداً
+                await createShopIfNotExists(
+                    userInfo.shopId, 
+                    userInfo.storeName, 
+                    userInfo.email
+                );
+                
+                checkConnection();
+                await loadProductStats();
+                await loadSalesStats();
+                await loadRecentActivities();
+            } else {
+                // إذا لم يكن هناك مستخدم، قم بتوجيهه إلى صفحة تسجيل الدخول
+                if (!isRedirecting) {
+                    console.log('❌ لا يوجد مستخدم، التوجيه إلى login.html');
+                    isRedirecting = true;
+                    window.location.href = 'login.html';
+                }
+            }
+        });
+
+        // تحديث البيانات كل 30 ثانية
+        setInterval(async () => {
+            if (currentShopId) {
+                await loadProductStats();
+                await loadSalesStats();
+            }
+        }, 30000);
+        
+        // تحميل البيانات أول مرة
+        window.addEventListener('load', () => {
+            console.log('🚀 الصفحة الرئيسية جاهزة');
+        });
+    </script>
+</body>
+</html>

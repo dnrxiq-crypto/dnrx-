@@ -1,0 +1,2865 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نظام المخزون الذكي</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 12px;
+      background: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #2c3e50;
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      font-size: 20px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #2c3e50;
+    }
+    
+    .subtitle {
+      color: #7f8c8d;
+      font-size: 12px;
+    }
+    
+    .tabs {
+      display: flex;
+      background: #ecf0f1;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 15px;
+      border: 1px solid #bdc3c7;
+      overflow-x: auto;
+    }
+    
+    .tab-btn {
+      flex: 1;
+      padding: 10px 8px;
+      border: none;
+      background: transparent;
+      color: #7f8c8d;
+      cursor: pointer;
+      font-size: 12px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-width: 80px;
+      white-space: nowrap;
+    }
+    
+    .tab-btn.active {
+      background: #3498db;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+    }
+    
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .search-section {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .search-box {
+      position: relative;
+      margin-bottom: 10px;
+    }
+    
+    .search-input input {
+      width: 100%;
+      padding: 12px 40px 12px 12px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      border-radius: 8px;
+      transition: border-color 0.3s;
+    }
+    
+    .search-input input:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    
+    .search-input i {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+      color: #95a5a6;
+      font-size: 14px;
+    }
+    
+    .scan-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    
+    .btn-scan {
+      padding: 12px;
+      border: 1px solid #3498db;
+      border-radius: 8px;
+      background: white;
+      color: #3498db;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    
+    .btn-scan:hover {
+      background: #f8f9fa;
+      transform: translateY(-1px);
+    }
+    
+    .btn-scan-primary {
+      background: #3498db;
+      color: white;
+    }
+    
+    .btn-scan-primary:hover {
+      background: #2980b9;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .stat-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
+    
+    .stat-value {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #2c3e50;
+    }
+    
+    .stat-label {
+      color: #7f8c8d;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .product-card {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px;
+      transition: all 0.3s ease;
+      position: relative;
+      font-size: 13px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .product-card:hover {
+      border-color: #3498db;
+      box-shadow: 0 4px 8px rgba(52, 152, 219, 0.15);
+      transform: translateY(-2px);
+    }
+    
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    
+    .product-name {
+      font-weight: 600;
+      font-size: 13px;
+      flex: 1;
+      margin-right: 8px;
+      color: #2c3e50;
+      line-height: 1.4;
+    }
+    
+    .product-stock {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: #f0f0f0;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    
+    .stock-green {
+      background: #d4f7e2;
+      color: #27ae60;
+    }
+    
+    .stock-yellow {
+      background: #fff8e1;
+      color: #f39c12;
+    }
+    
+    .stock-red {
+      background: #ffeaea;
+      color: #e74c3c;
+    }
+    
+    .stock-gray {
+      background: #f5f5f5;
+      color: #95a5a6;
+    }
+    
+    .product-price {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #2c3e50;
+    }
+    
+    .product-barcode {
+      font-size: 11px;
+      color: #7f8c8d;
+      background: #f8f9fa;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      direction: ltr;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .product-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .btn-action {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
+      color: #333;
+      cursor: pointer;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    
+    .btn-action:hover {
+      background: #f8f9fa;
+    }
+    
+    .btn-action-success {
+      background: #27ae60;
+      color: white;
+      border-color: #27ae60;
+    }
+    
+    .btn-action-success:hover {
+      background: #219653;
+    }
+    
+    .btn-action-primary {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+    }
+    
+    .btn-action-primary:hover {
+      background: #2980b9;
+    }
+    
+    .btn-action-warning {
+      background: #f39c12;
+      color: white;
+      border-color: #f39c12;
+    }
+    
+    .btn-action-warning:hover {
+      background: #d68910;
+    }
+    
+    .product-source {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    
+    .source-personal {
+      background: #d4f7e2;
+      color: #27ae60;
+    }
+    
+    .source-general {
+      background: #e3f2fd;
+      color: #2980b9;
+    }
+    
+    .source-pending {
+      background: #fff8e1;
+      color: #f39c12;
+    }
+    
+    .store-name {
+      font-size: 11px;
+      color: #7f8c8d;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .form-section {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .form-title {
+      font-size: 16px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #2c3e50;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .form-group {
+      margin-bottom: 12px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #2c3e50;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    
+    .product-type-selector {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      background: #f8f9fa;
+    }
+    
+    .type-option {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .type-option.active {
+      border-color: #3498db;
+      background: #3498db;
+      color: white;
+      box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+    }
+    
+    .type-option i {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 16px;
+    }
+    
+    .category-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+      margin-top: 5px;
+    }
+    
+    .category-btn {
+      padding: 10px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    
+    .category-btn.active {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+    }
+    
+    .telegram-settings {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+    
+    .telegram-setting-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .telegram-setting-label {
+      font-size: 12px;
+      color: #7f8c8d;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .telegram-setting-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .telegram-setting-input input {
+      flex: 1;
+      padding: 8px;
+      font-size: 13px;
+    }
+    
+    .telegram-status {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      margin-top: 5px;
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    .status-active {
+      background: #d4f7e2;
+      color: #27ae60;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .status-inactive {
+      background: #f8f9fa;
+      color: #95a5a6;
+      border: 1px solid #e9ecef;
+    }
+    
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      font-size: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #3498db;
+    }
+    
+    .modal-title {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #2c3e50;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #7f8c8d;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.3s;
+    }
+    
+    .modal-close:hover {
+      background: #f5f5f5;
+    }
+    
+    .scanner-container {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      background: #000;
+      margin-bottom: 15px;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    
+    #scanner-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+    
+    .scanner-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 150px;
+      border: 3px solid rgba(52, 152, 219, 0.8);
+      box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.7);
+      pointer-events: none;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { border-color: rgba(52, 152, 219, 0.8); }
+      50% { border-color: rgba(52, 152, 219, 0.4); }
+      100% { border-color: rgba(52, 152, 219, 0.8); }
+    }
+    
+    .scanner-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+    
+    .scan-result {
+      padding: 12px;
+      border: 1px solid #ddd;
+      background: #f8f9fa;
+      text-align: center;
+      font-size: 13px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      min-height: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s;
+    }
+    
+    .result-success {
+      background: #d4f7e2;
+      border-color: #c3e6cb;
+      color: #27ae60;
+    }
+    
+    .result-error {
+      background: #ffeaea;
+      border-color: #f5c6cb;
+      color: #e74c3c;
+    }
+    
+    .result-info {
+      background: #e3f2fd;
+      border-color: #bee5eb;
+      color: #2980b9;
+    }
+    
+    .manual-input {
+      margin-top: 15px;
+    }
+    
+    .manual-input input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      font-size: 16px;
+      text-align: center;
+      font-family: monospace;
+    }
+    
+    .modal-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .btn-modal {
+      padding: 12px;
+      border: 1px solid #3498db;
+      border-radius: 8px;
+      background: white;
+      color: #3498db;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+    
+    .btn-modal:hover {
+      background: #f8f9fa;
+      transform: translateY(-1px);
+    }
+    
+    .btn-modal-primary {
+      background: #3498db;
+      color: white;
+    }
+    
+    .btn-modal-primary:hover {
+      background: #2980b9;
+    }
+    
+    .barcode-field {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .barcode-field input {
+      flex: 1;
+    }
+    
+    .btn-barcode {
+      padding: 10px 12px;
+      border: 1px solid #3498db;
+      border-radius: 8px;
+      background: #3498db;
+      color: white;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.3s;
+    }
+    
+    .btn-barcode:hover {
+      background: #2980b9;
+      transform: translateY(-1px);
+    }
+    
+    .button-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .btn {
+      padding: 12px 15px;
+      border: 1px solid #3498db;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: white;
+      color: #3498db;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    
+    .btn:hover {
+      background: #f8f9fa;
+      transform: translateY(-1px);
+    }
+    
+    .btn-primary {
+      background: #3498db;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #2980b9;
+    }
+    
+    .btn-success {
+      background: #27ae60;
+      color: white;
+      border-color: #27ae60;
+    }
+    
+    .btn-success:hover {
+      background: #219653;
+    }
+    
+    .btn-warning {
+      background: #f39c12;
+      color: white;
+      border-color: #f39c12;
+    }
+    
+    .btn-warning:hover {
+      background: #d68910;
+    }
+    
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+      border-color: #e74c3c;
+    }
+    
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+    
+    .btn-full {
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 30px 15px;
+      color: #95a5a6;
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-size: 13px;
+    }
+    
+    .empty-state i {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #bdc3c7;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px 15px;
+      color: #95a5a6;
+      font-size: 13px;
+    }
+    
+    .loading i {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #3498db;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #ddd;
+      color: #7f8c8d;
+      font-size: 12px;
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .telegram-test {
+      background: #0088cc;
+      color: white;
+      border-color: #0088cc;
+      font-size: 13px;
+    }
+    
+    .telegram-test:hover {
+      background: #006699;
+    }
+    
+    .admin-badge {
+      background: #9b59b6;
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 5px;
+    }
+    
+    .auth-buttons {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .btn-auth {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #f8f9fa;
+      color: #333;
+      transition: all 0.3s;
+    }
+    
+    .btn-auth:hover {
+      background: #e9ecef;
+      transform: translateY(-1px);
+    }
+    
+    .btn-auth-logout {
+      background: #e74c3c;
+      color: white;
+      border-color: #e74c3c;
+    }
+    
+    .btn-auth-logout:hover {
+      background: #c0392b;
+    }
+    
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .settings-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .settings-title {
+      font-size: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      color: #2c3e50;
+    }
+    
+    .bot-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .bot-connected {
+      background: #d4f7e2;
+      color: #27ae60;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .bot-disconnected {
+      background: #ffeaea;
+      color: #e74c3c;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .manual-barcode-section {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+    
+    .barcode-input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    
+    .barcode-input-group input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+    }
+    
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 500;
+      z-index: 1001;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      animation: slideIn 0.3s ease;
+      max-width: 300px;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .notification-success {
+      background: #27ae60;
+    }
+    
+    .notification-error {
+      background: #e74c3c;
+    }
+    
+    .notification-info {
+      background: #3498db;
+    }
+    
+    .notification-warning {
+      background: #f39c12;
+    }
+    
+    .user-role {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-right: 5px;
+    }
+    
+    .role-admin {
+      background: #9b59b6;
+      color: white;
+    }
+    
+    .role-user {
+      background: #3498db;
+      color: white;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      margin: 20px 0 15px 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+        font-size: 13px;
+      }
+      
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 10px;
+      }
+      
+      .modal-content {
+        padding: 12px;
+      }
+      
+      .scanner-container {
+        height: 200px;
+      }
+      
+      .btn, .btn-modal, .btn-scan {
+        padding: 10px;
+        font-size: 12px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-boxes"></i> نظام المخزون الذكي</h1>
+      <p class="subtitle" id="userGreeting">جاري التحميل...</p>
+      <div id="userRoleBadge" style="margin-top: 5px; font-size: 11px;"></div>
+    </header>
+    
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="my-products">
+        <i class="fas fa-store"></i> منتجاتي
+      </button>
+      <button class="tab-btn" data-tab="general-store">
+        <i class="fas fa-warehouse"></i> العام
+      </button>
+      <button class="tab-btn" data-tab="add-product">
+        <i class="fas fa-plus-circle"></i> إضافة
+      </button>
+      <button class="tab-btn" data-tab="settings">
+        <i class="fas fa-cog"></i> الإعدادات
+      </button>
+      <button class="tab-btn" data-tab="pending-products" id="pendingTab" style="display: none;">
+        <i class="fas fa-clock"></i> في انتظار
+        <span class="pending-count" style="font-size: 10px; background: #f39c12; color: white; border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; margin-right: 5px;"></span>
+      </button>
+    </div>
+    
+    <!-- تبويب منتجاتي -->
+    <div id="my-products" class="tab-content active">
+      <div class="search-section">
+        <div class="search-box">
+          <div class="search-input">
+            <input type="text" id="searchMyProducts" placeholder="ابحث في منتجاتك بالاسم أو الباركود...">
+            <i class="fas fa-search"></i>
+          </div>
+        </div>
+        
+        <div class="scan-buttons">
+          <button class="btn-scan btn-scan-primary" onclick="openScanner('search-my')">
+            <i class="fas fa-camera"></i> مسح الباركود
+          </button>
+          <button class="btn-scan" onclick="openManualBarcode('search-my')">
+            <i class="fas fa-keyboard"></i> إدخال يدوي
+          </button>
+        </div>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="myTotalProducts">0</div>
+          <div class="stat-label">إجمالي المنتجات</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value" id="myLowStockCount">0</div>
+          <div class="stat-label">كمية منخفضة</div>
+        </div>
+      </div>
+      
+      <h3 class="section-title">
+        <i class="fas fa-list"></i> منتجاتي (<span id="myProductsCount">0</span>)
+      </h3>
+      
+      <div class="products-grid" id="myProductsList">
+        <div class="loading">
+          <i class="fas fa-spinner"></i>
+          <p>جاري تحميل المنتجات...</p>
+        </div>
+      </div>
+      
+      <button class="btn btn-primary btn-full" onclick="exportMyProducts()">
+        <i class="fas fa-download"></i> تصدير المنتجات
+      </button>
+    </div>
+    
+    <!-- تبويب المخزن العام -->
+    <div id="general-store" class="tab-content">
+      <div class="search-section">
+        <div class="search-box">
+          <div class="search-input">
+            <input type="text" id="searchGeneralProducts" placeholder="ابحث في المخزن العام...">
+            <i class="fas fa-search"></i>
+          </div>
+        </div>
+        
+        <div class="scan-buttons">
+          <button class="btn-scan btn-scan-primary" onclick="openScanner('search-general')">
+            <i class="fas fa-camera"></i> مسح الباركود
+          </button>
+          <button class="btn-scan" onclick="openManualBarcode('search-general')">
+            <i class="fas fa-keyboard"></i> إدخال يدوي
+          </button>
+        </div>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="generalTotalProducts">0</div>
+          <div class="stat-label">منتج عام</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value" id="generalPopularCount">0</div>
+          <div class="stat-label">الأكثر استخداماً</div>
+        </div>
+      </div>
+      
+      <h3 class="section-title">
+        <i class="fas fa-globe"></i> المخزن العام (<span id="generalProductsCount">0</span>)
+      </h3>
+      
+      <div class="products-grid" id="generalProductsList">
+        <div class="loading">
+          <i class="fas fa-spinner"></i>
+          <p>جاري تحميل المنتجات العامة...</p>
+        </div>
+      </div>
+      
+      <button class="btn btn-success btn-full" onclick="syncWithGeneralStore()">
+        <i class="fas fa-sync-alt"></i> تحديث المخزن العام
+      </button>
+    </div>
+    
+    <!-- تبويب إضافة منتج -->
+    <div id="add-product" class="tab-content">
+      <div class="form-section">
+        <h3 class="form-title">
+          <i class="fas fa-edit"></i>
+          <span id="formTitle">إضافة منتج جديد</span>
+        </h3>
+        
+        <div class="product-type-selector" id="productTypeSelector">
+          <div class="type-option active" data-type="personal" id="personalOption">
+            <i class="fas fa-store"></i>
+            <div>منتج شخصي</div>
+          </div>
+          <div class="type-option" data-type="general" id="generalProductOption">
+            <i class="fas fa-globe"></i>
+            <div>منتج عام</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>اسم المنتج:</label>
+          <input type="text" id="pName" placeholder="أدخل اسم المنتج" required>
+        </div>
+        
+        <div class="form-group">
+          <label>باركود (اختياري):</label>
+          <div class="barcode-field">
+            <input type="text" id="pBarcode" placeholder="أدخل الباركود" dir="ltr">
+            <button class="btn-barcode" onclick="openScanner('form')" title="مسح الباركود">
+              <i class="fas fa-camera"></i>
+            </button>
+            <button class="btn-barcode" onclick="openManualBarcode('form')" title="إدخال يدوي">
+              <i class="fas fa-keyboard"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>السعر (دينار عراقي):</label>
+          <input type="number" id="pPrice" step="0.01" placeholder="أدخل السعر" required>
+        </div>
+        
+        <div class="form-group">
+          <label>الكمية المتاحة:</label>
+          <input type="number" id="pStock" placeholder="أدخل الكمية" required min="0">
+        </div>
+        
+        <div class="form-group">
+          <label>فئة المنتج:</label>
+          <div class="category-buttons">
+            <div class="category-btn" data-category="food">غذائية</div>
+            <div class="category-btn" data-category="drinks">مشروبات</div>
+            <div class="category-btn" data-category="dairy">ألبان</div>
+            <div class="category-btn" data-category="cleaning">تنظيف</div>
+            <div class="category-btn" data-category="personal">عناية شخصية</div>
+            <div class="category-btn active" data-category="other">أخرى</div>
+          </div>
+          <input type="hidden" id="pCategory" value="other">
+        </div>
+        
+        <div class="button-group">
+          <button class="btn btn-primary" onclick="createOrUpdateProduct()">
+            <i class="fas fa-save"></i> حفظ المنتج
+          </button>
+          <button class="btn" onclick="clearForm()">
+            <i class="fas fa-times"></i> مسح النموذج
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- تبويب الإعدادات -->
+    <div id="settings" class="tab-content">
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3 class="settings-title">
+            <i class="fab fa-telegram"></i> إعدادات التلجرام
+          </h3>
+          
+          <div class="form-group">
+            <label>معرف البوت (Bot Token):</label>
+            <input type="password" id="telegramBotToken" placeholder="أدخل Token البوت الخاص بك">
+            <small style="font-size: 11px; color: #7f8c8d;">مثال: 1234567890:ABCdefGHIjklMNOpqrsTUVwxyz</small>
+          </div>
+          
+          <div class="form-group">
+            <label>معرف الدردشة (Chat ID):</label>
+            <input type="text" id="telegramChatId" placeholder="أدخل معرف الدردشة الخاص بك">
+            <small style="font-size: 11px; color: #7f8c8d;">يمكنك الحصول عليه من @userinfobot على التلجرام</small>
+          </div>
+          
+          <div id="botStatus" class="bot-status bot-disconnected">
+            <i class="fas fa-circle"></i> البوت غير متصل
+          </div>
+          
+          <div class="button-group" style="margin-top: 15px;">
+            <button class="btn btn-success" onclick="saveTelegramSettings()">
+              <i class="fas fa-save"></i> حفظ الإعدادات
+            </button>
+            <button class="btn telegram-test" onclick="testTelegramConnection()">
+              <i class="fab fa-telegram"></i> اختبار الاتصال
+            </button>
+          </div>
+        </div>
+        
+        <div class="settings-card">
+          <h3 class="settings-title">
+            <i class="fas fa-user"></i> إعدادات الحساب
+          </h3>
+          
+          <div class="form-group">
+            <label>اسم المتجر:</label>
+            <input type="text" id="storeName" placeholder="اسم المتجر">
+          </div>
+          
+          <div class="form-group">
+            <label>البريد الإلكتروني:</label>
+            <input type="email" id="userEmail" placeholder="البريد الإلكتروني" readonly>
+          </div>
+          
+          <button class="btn btn-primary" onclick="updateUserSettings()">
+            <i class="fas fa-sync-alt"></i> تحديث الحساب
+          </button>
+        </div>
+        
+        <div class="settings-card">
+          <h3 class="settings-title">
+            <i class="fas fa-cogs"></i> إجراءات الحساب
+          </h3>
+          
+          <div class="button-group">
+            <button class="btn btn-primary" onclick="loginWithEmail()">
+              <i class="fas fa-sign-in-alt"></i> تسجيل الدخول/إنشاء حساب
+            </button>
+            <button class="btn btn-danger" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- تبويب المنتجات المنتظرة (للمدير فقط) -->
+    <div id="pending-products" class="tab-content">
+      <h3 class="section-title">
+        <i class="fas fa-clock"></i> المنتجات المنتظرة للموافقة (<span id="pendingProductsCount">0</span>)
+      </h3>
+      
+      <div class="products-grid" id="pendingProductsList">
+        <div class="loading">
+          <i class="fas fa-spinner"></i>
+          <p>جاري تحميل المنتجات المنتظرة...</p>
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <p>نظام إدارة المخزون الذكي © 2024</p>
+      <p style="font-size: 11px; margin-top: 8px;" id="currentUser">جاري التحميل...</p>
+    </footer>
+  </div>
+
+  <!-- نافذة ماسح الباركود -->
+  <div class="modal-overlay" id="scannerModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fas fa-barcode"></i> قارئ الباركود
+        </h3>
+        <button class="modal-close" onclick="closeScanner()">×</button>
+      </div>
+      
+      <div class="scanner-container">
+        <video id="scanner-video" autoplay playsinline></video>
+        <div class="scanner-overlay"></div>
+      </div>
+      
+      <div class="scanner-stats">
+        <div>المسح: <span id="scannedCount">0</span></div>
+        <div>الدقة: <span id="scanAccuracy">0%</span></div>
+      </div>
+      
+      <div class="scan-result result-info" id="scanResult">
+        <div>
+          <i class="fas fa-barcode"></i>
+          <span>وجّه الكاميرا نحو الباركود للمسح</span>
+        </div>
+      </div>
+      
+      <div class="manual-input" id="manualInputSection">
+        <input type="text" id="manualBarcodeInput" placeholder="أدخل الباركود يدوياً" dir="ltr">
+        <button class="btn btn-full btn-primary" onclick="processManualBarcode()">
+          <i class="fas fa-check"></i> تأكيد الباركود
+        </button>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn-modal" onclick="switchCamera()">
+          <i class="fas fa-sync-alt"></i> تبديل الكاميرا
+        </button>
+        <button class="btn-modal" onclick="toggleManualInput()">
+          <i class="fas fa-keyboard"></i> إدخال يدوي
+        </button>
+        <button class="btn-modal btn-modal-primary" onclick="closeScanner()">
+          <i class="fas fa-check"></i> إنهاء
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة استيراد منتج -->
+  <div class="modal-overlay" id="importModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fas fa-copy"></i> استيراد منتج من المخزن العام
+        </h3>
+        <button class="modal-close" onclick="closeImportModal()">×</button>
+      </div>
+      
+      <div class="form-group">
+        <label>اسم المنتج:</label>
+        <input type="text" id="importName" readonly>
+      </div>
+      
+      <div class="form-group">
+        <label>باركود:</label>
+        <input type="text" id="importBarcode" readonly dir="ltr">
+      </div>
+      
+      <div class="form-group">
+        <label>السعر (دينار عراقي):</label>
+        <input type="number" id="importPrice" step="0.01" placeholder="أدخل سعر المنتج" required>
+      </div>
+      
+      <div class="form-group">
+        <label>الكمية:</label>
+        <input type="number" id="importStock" placeholder="أدخل الكمية" required min="0">
+      </div>
+      
+      <div class="button-group">
+        <button class="btn btn-success" onclick="confirmImport()">
+          <i class="fas fa-check"></i> تأكيد الاستيراد
+        </button>
+        <button class="btn" onclick="closeImportModal()">
+          <i class="fas fa-times"></i> إلغاء
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- صوت التنبيه -->
+  <audio id="beepSound" preload="auto">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+  </audio>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+    import { getDatabase, ref, get, child, push, set, update, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signInAnonymously, 
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+
+    // تكوين Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+      authDomain: "zio3-8ffdd.firebaseapp.com",
+      databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+      projectId: "zio3-8ffdd",
+      storageBucket: "zio3-8ffdd.firebasestorage.app",
+      messagingSenderId: "560939348415",
+      appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+      measurementId: "G-CVN2B2D0RD"
+    };
+    
+    // تهيئة Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+    
+    // إعدادات النظام
+    const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
+    
+    // متغيرات النظام
+    let currentUser = null;
+    let isAdmin = false;
+    let editingId = null;
+    let productType = 'personal';
+    let myProducts = {};
+    let generalProducts = {};
+    let pendingProducts = {};
+    let productToImport = null;
+    let scannerMode = '';
+    let scannerActive = false;
+    let currentStream = null;
+    let facingMode = 'environment';
+    let manualInputVisible = false;
+
+    // متابعة حالة تسجيل الدخول
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await handleUserSession(user);
+      } else {
+        try {
+          // تسجيل الدخول المجهول كحالة افتراضية
+          await signInAnonymously(auth);
+        } catch (error) {
+          console.error('خطأ في تسجيل الدخول المجهول:', error);
+          showNotification('حدث خطأ في تسجيل الدخول. يرجى تحديث الصفحة.', 'error');
+        }
+      }
+    });
+
+    // إدارة جلسة المستخدم
+    async function handleUserSession(user) {
+      try {
+        const userRef = ref(db, `users/${user.uid}`);
+        const userSnap = await get(userRef);
+        
+        if (userSnap.exists()) {
+          // المستخدم موجود - تحميل بياناته
+          const userData = userSnap.val();
+          currentUser = {
+            uid: user.uid,
+            email: user.email || userData.email || 'مستخدم مجهول',
+            storeName: userData.storeName || (user.email ? user.email.split('@')[0] : 'متجري'),
+            telegramChatId: userData.telegramChatId || '',
+            telegramBotToken: userData.telegramBotToken || '',
+            isAdmin: user.email === ADMIN_EMAIL,
+            createdAt: userData.createdAt || Date.now()
+          };
+        } else {
+          // مستخدم جديد - إنشاء حساب
+          let storeName = 'متجري';
+          
+          if (!user.email) {
+            // مستخدم مجهول - طلب اسم المتجر
+            storeName = prompt('أهلاً بك في نظام المخزون الذكي!\n\nأدخل اسم متجرك:', 'متجري') || 'متجري';
+          } else {
+            // مستخدم بالبريد الإلكتروني
+            storeName = user.email.split('@')[0] || 'متجري';
+          }
+          
+          currentUser = {
+            uid: user.uid,
+            email: user.email || 'مستخدم مجهول',
+            storeName: storeName,
+            telegramChatId: '',
+            telegramBotToken: '',
+            isAdmin: user.email === ADMIN_EMAIL,
+            createdAt: Date.now()
+          };
+          
+          // حفظ بيانات المستخدم في قاعدة البيانات
+          await set(userRef, currentUser);
+        }
+        
+        // حفظ البيانات في التخزين المحلي
+        localStorage.setItem('inventory_user', JSON.stringify(currentUser));
+        
+        isAdmin = currentUser.isAdmin;
+        updateUIForUser();
+        await loadData();
+        
+      } catch (error) {
+        console.error('خطأ في إدارة الجلسة:', error);
+        showNotification('حدث خطأ في تحميل بيانات المستخدم. يرجى تحديث الصفحة.', 'error');
+      }
+    }
+
+    // تحديث واجهة المستخدم بناءً على بيانات المستخدم
+    function updateUIForUser() {
+      if (!currentUser) return;
+      
+      // تحديث الترحيب
+      const greeting = currentUser.email === 'مستخدم مجهول' 
+        ? `مرحباً، ${currentUser.storeName}` 
+        : `مرحباً، ${currentUser.storeName} (${currentUser.email})`;
+      
+      document.getElementById('userGreeting').textContent = greeting;
+      document.getElementById('currentUser').textContent = currentUser.email;
+      
+      // تحديث إعدادات الحساب في النموذج
+      document.getElementById('storeName').value = currentUser.storeName;
+      document.getElementById('userEmail').value = currentUser.email;
+      
+      // تحديث إعدادات التلجرام
+      if (currentUser.telegramBotToken) {
+        document.getElementById('telegramBotToken').value = currentUser.telegramBotToken;
+      }
+      
+      if (currentUser.telegramChatId) {
+        document.getElementById('telegramChatId').value = currentUser.telegramChatId;
+      }
+      
+      // تحديث حالة البوت
+      updateBotStatus();
+      
+      // إظهار أو إخفاء تبويب المنتجات المنتظرة للمدير
+      const pendingTab = document.getElementById('pendingTab');
+      const pendingCount = document.querySelector('.pending-count');
+      
+      if (isAdmin) {
+        pendingTab.style.display = 'flex';
+        if (pendingCount) {
+          pendingCount.textContent = Object.keys(pendingProducts).length;
+        }
+      } else {
+        pendingTab.style.display = 'none';
+      }
+      
+      // تحديث شارة الدور
+      const roleBadge = document.getElementById('userRoleBadge');
+      if (isAdmin) {
+        roleBadge.innerHTML = '<span class="user-role role-admin"><i class="fas fa-crown"></i> مدير النظام</span>';
+      } else {
+        roleBadge.innerHTML = '<span class="user-role role-user"><i class="fas fa-user"></i> مستخدم عادي</span>';
+      }
+      
+      // تحديث خيار المنتج العام
+      const generalOption = document.getElementById('generalProductOption');
+      if (isAdmin) {
+        generalOption.innerHTML = '<i class="fas fa-globe"></i><div>منتج عام (مدير)</div>';
+      } else {
+        generalOption.innerHTML = '<i class="fas fa-globe"></i><div>منتج عام (يحتاج موافقة)</div>';
+      }
+    }
+
+    // تحديث حالة بوت التلجرام
+    function updateBotStatus() {
+      const botStatus = document.getElementById('botStatus');
+      const hasToken = currentUser.telegramBotToken && currentUser.telegramBotToken.trim() !== '';
+      const hasChatId = currentUser.telegramChatId && currentUser.telegramChatId.trim() !== '';
+      
+      if (hasToken && hasChatId) {
+        botStatus.innerHTML = '<i class="fas fa-circle"></i> البوت متصل وجاهز للإشعارات';
+        botStatus.className = 'bot-status bot-connected';
+      } else {
+        botStatus.innerHTML = '<i class="fas fa-circle"></i> البوت غير متصل';
+        botStatus.className = 'bot-status bot-disconnected';
+      }
+    }
+
+    // حفظ إعدادات التلجرام
+    window.saveTelegramSettings = async function() {
+      const botToken = document.getElementById('telegramBotToken').value.trim();
+      const chatId = document.getElementById('telegramChatId').value.trim();
+      
+      if (!botToken) {
+        showNotification('يرجى إدخال Token البوت', 'warning');
+        return;
+      }
+      
+      if (!chatId) {
+        showNotification('يرجى إدخال معرف الدردشة', 'warning');
+        return;
+      }
+      
+      try {
+        // التحقق من صحة Token البوت
+        if (!botToken.includes(':')) {
+          showNotification('Token البوت غير صالح. يجب أن يحتوي على النقطة الرقمية قبل النقطتين (:).', 'error');
+          return;
+        }
+        
+        // تحديث بيانات المستخدم
+        currentUser.telegramBotToken = botToken;
+        currentUser.telegramChatId = chatId;
+        
+        const userRef = ref(db, `users/${currentUser.uid}`);
+        await update(userRef, {
+          telegramBotToken: botToken,
+          telegramChatId: chatId
+        });
+        
+        // تحديث التخزين المحلي
+        localStorage.setItem('inventory_user', JSON.stringify(currentUser));
+        
+        // تحديث الواجهة
+        updateBotStatus();
+        showNotification('تم حفظ إعدادات التلجرام بنجاح', 'success');
+        
+      } catch (error) {
+        console.error('خطأ في حفظ إعدادات التلجرام:', error);
+        showNotification('خطأ في حفظ الإعدادات: ' + error.message, 'error');
+      }
+    };
+
+    // تحديث إعدادات الحساب
+    window.updateUserSettings = async function() {
+      const storeName = document.getElementById('storeName').value.trim();
+      
+      if (!storeName) {
+        showNotification('يرجى إدخال اسم المتجر', 'warning');
+        return;
+      }
+      
+      try {
+        // تحديث بيانات المستخدم
+        currentUser.storeName = storeName;
+        
+        const userRef = ref(db, `users/${currentUser.uid}`);
+        await update(userRef, {
+          storeName: storeName
+        });
+        
+        // تحديث التخزين المحلي
+        localStorage.setItem('inventory_user', JSON.stringify(currentUser));
+        
+        // تحديث الواجهة
+        document.getElementById('userGreeting').textContent = `مرحباً، ${storeName}`;
+        
+        showNotification('تم تحديث إعدادات الحساب بنجاح', 'success');
+        
+      } catch (error) {
+        console.error('خطأ في تحديث إعدادات الحساب:', error);
+        showNotification('خطأ في تحديث الإعدادات: ' + error.message, 'error');
+      }
+    };
+
+    // اختبار اتصال التلجرام
+    window.testTelegramConnection = async function() {
+      const botToken = document.getElementById('telegramBotToken').value.trim();
+      const chatId = document.getElementById('telegramChatId').value.trim();
+      
+      if (!botToken || !chatId) {
+        showNotification('يرجى إدخال إعدادات التلجرام أولاً وحفظها', 'warning');
+        return;
+      }
+      
+      try {
+        const message = `🔔 اختبار اتصال نظام المخزون الذكي\n\n`
+          + `🏪 المتجر: ${currentUser.storeName}\n`
+          + `📧 البريد: ${currentUser.email}\n`
+          + `⏰ الوقت: ${new Date().toLocaleString('ar-IQ')}\n\n`
+          + `✅ تم الاتصال بنجاح بالبوت`;
+        
+        const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+        
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: 'HTML'
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.ok) {
+          showNotification('✅ تم إرسال رسالة الاختبار بنجاح إلى التلجرام', 'success');
+        } else {
+          showNotification(`❌ فشل إرسال الرسالة. تأكد من صحة الإعدادات.\nالخطأ: ${data.description || 'غير معروف'}`, 'error');
+        }
+      } catch (error) {
+        console.error('خطأ في اختبار التلجرام:', error);
+        showNotification('خطأ في الاتصال بالتليجرام: ' + error.message, 'error');
+      }
+    };
+
+    // تحميل البيانات
+    async function loadData() {
+      await loadMyProducts();
+      await loadGeneralProducts();
+      if (isAdmin) {
+        await loadPendingProducts();
+      }
+    }
+
+    // تحميل منتجات المستخدم
+    async function loadMyProducts() {
+      try {
+        const snap = await get(ref(db, `stores/${currentUser.uid}/products`));
+        myProducts = snap.exists() ? snap.val() : {};
+        
+        // إضافة المعرف والمصدر للمنتجات
+        Object.keys(myProducts).forEach(k => {
+          if (myProducts[k]) {
+            myProducts[k].id = k;
+            myProducts[k].source = 'personal';
+          }
+        });
+        
+        renderMyProductsList();
+        updateMyProductsStats();
+      } catch (error) {
+        console.error('خطأ في تحميل المنتجات:', error);
+        myProducts = {};
+      }
+    }
+
+    // تحميل المنتجات العامة
+    async function loadGeneralProducts() {
+      try {
+        const snap = await get(ref(db, 'general/products'));
+        const allProducts = snap.exists() ? snap.val() : {};
+        
+        generalProducts = {};
+        Object.keys(allProducts).forEach(k => {
+          if (allProducts[k] && allProducts[k].status === 'approved') {
+            generalProducts[k] = allProducts[k];
+            generalProducts[k].id = k;
+            generalProducts[k].source = 'general';
+          }
+        });
+        
+        renderGeneralProductsList();
+      } catch (error) {
+        console.error('خطأ في تحميل المخزن العام:', error);
+        generalProducts = {};
+      }
+    }
+
+    // تحميل المنتجات المنتظرة (للمدير فقط)
+    async function loadPendingProducts() {
+      try {
+        const snap = await get(ref(db, 'general/products'));
+        const allProducts = snap.exists() ? snap.val() : {};
+        
+        pendingProducts = {};
+        Object.keys(allProducts).forEach(k => {
+          if (allProducts[k] && allProducts[k].status === 'pending') {
+            pendingProducts[k] = allProducts[k];
+            pendingProducts[k].id = k;
+          }
+        });
+        
+        document.getElementById('pendingProductsCount').textContent = Object.keys(pendingProducts).length;
+        const pendingCount = document.querySelector('.pending-count');
+        if (pendingCount) {
+          pendingCount.textContent = Object.keys(pendingProducts).length;
+        }
+        renderPendingProductsList();
+      } catch (error) {
+        console.error('خطأ في تحميل المنتجات المنتظرة:', error);
+        pendingProducts = {};
+      }
+    }
+
+    // عرض منتجات المستخدم
+    function renderMyProductsList() {
+      const el = document.getElementById('myProductsList');
+      const searchTerm = document.getElementById('searchMyProducts').value.toLowerCase();
+      
+      let products = Object.values(myProducts).filter(p => p);
+      
+      // البحث
+      if (searchTerm) {
+        products = products.filter(p => 
+          (p.name && p.name.toLowerCase().includes(searchTerm)) ||
+          (p.barcode && p.barcode.toLowerCase().includes(searchTerm)) ||
+          (p.category && p.category.toLowerCase().includes(searchTerm))
+        );
+      }
+      
+      // تحديث الإحصائيات
+      document.getElementById('myProductsCount').textContent = products.length;
+      document.getElementById('myTotalProducts').textContent = products.length;
+      
+      if (products.length === 0) {
+        if (searchTerm) {
+          el.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>لا توجد منتجات تطابق بحثك</p></div>';
+        } else {
+          el.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>لا توجد منتجات بعد. أضف أول منتج!</p></div>';
+        }
+        return;
+      }
+      
+      // حساب المنتجات ذات الكمية المنخفضة
+      let lowStockCount = 0;
+      el.innerHTML = '';
+      
+      products.forEach(p => {
+        const stock = parseInt(p.stock || 0);
+        let stockClass = 'stock-gray';
+        
+        if (stock > 20) stockClass = 'stock-green';
+        else if (stock > 5) stockClass = 'stock-yellow';
+        else if (stock > 0) stockClass = 'stock-red';
+        
+        if (stock > 0 && stock <= 5) lowStockCount++;
+        
+        const div = document.createElement('div');
+        div.className = 'product-card';
+        div.innerHTML = `
+          <div class="product-source source-personal">${currentUser.storeName}</div>
+          <div class="product-header">
+            <div class="product-name">${p.name || 'بدون اسم'}</div>
+            <div class="product-stock ${stockClass}">${stock}</div>
+          </div>
+          <div class="product-price">${(p.price || 0).toLocaleString()} د.ع</div>
+          <div class="product-barcode">${p.barcode || 'بدون باركود'}</div>
+          <div class="store-name">
+            <i class="fas fa-tag"></i>
+            <span>${getCategoryName(p.category)}</span>
+          </div>
+          <div class="product-actions">
+            <button class="btn-action btn-action-primary" onclick="editProduct('${p.id}', 'personal')" title="تعديل المنتج">
+              <i class="fas fa-edit"></i> تعديل
+            </button>
+            <button class="btn-action btn-action-warning" onclick="adjustStock('${p.id}', 'personal')" title="تعديل الكمية">
+              <i class="fas fa-exchange-alt"></i> كمية
+            </button>
+            <button class="btn-action" onclick="deleteProduct('${p.id}', 'personal')" title="حذف المنتج">
+              <i class="fas fa-trash"></i> حذف
+            </button>
+          </div>
+        `;
+        el.appendChild(div);
+      });
+      
+      document.getElementById('myLowStockCount').textContent = lowStockCount;
+    }
+
+    // عرض المنتجات العامة
+    function renderGeneralProductsList() {
+      const el = document.getElementById('generalProductsList');
+      const searchTerm = document.getElementById('searchGeneralProducts').value.toLowerCase();
+      
+      let products = Object.values(generalProducts).filter(p => p);
+      
+      // البحث
+      if (searchTerm) {
+        products = products.filter(p => 
+          (p.name && p.name.toLowerCase().includes(searchTerm)) ||
+          (p.barcode && p.barcode.toLowerCase().includes(searchTerm)) ||
+          (p.category && p.category.toLowerCase().includes(searchTerm))
+        );
+      }
+      
+      // تحديث الإحصائيات
+      document.getElementById('generalProductsCount').textContent = products.length;
+      document.getElementById('generalTotalProducts').textContent = products.length;
+      
+      if (products.length === 0) {
+        if (searchTerm) {
+          el.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>لا توجد منتجات عامة تطابق بحثك</p></div>';
+        } else {
+          el.innerHTML = '<div class="empty-state"><i class="fas fa-warehouse"></i><p>لا توجد منتجات عامة بعد</p></div>';
+        }
+        return;
+      }
+      
+      // حساب المنتجات الشائعة
+      let popularCount = 0;
+      el.innerHTML = '';
+      
+      products.forEach(p => {
+        if (p.usageCount && p.usageCount > 10) popularCount++;
+        
+        const div = document.createElement('div');
+        div.className = 'product-card';
+        div.innerHTML = `
+          <div class="product-source source-general">منتج عام</div>
+          <div class="store-name">
+            <i class="fas fa-store"></i>
+            <span>${p.storeName || 'مخزن عام'}</span>
+          </div>
+          <div class="product-header">
+            <div class="product-name">${p.name || 'بدون اسم'}</div>
+          </div>
+          <div class="product-barcode">${p.barcode || 'بدون باركود'}</div>
+          <div class="store-name">
+            <i class="fas fa-tag"></i>
+            <span>${getCategoryName(p.category)}</span>
+            ${p.usageCount ? `<span style="margin-right: 10px;"><i class="fas fa-download"></i> ${p.usageCount}</span>` : ''}
+          </div>
+          <div class="product-actions">
+            <button class="btn-action btn-action-success" onclick="showImportModal('${p.id}')" title="استيراد المنتج إلى مخزونك">
+              <i class="fas fa-copy"></i> استيراد
+            </button>
+          </div>
+        `;
+        el.appendChild(div);
+      });
+      
+      document.getElementById('generalPopularCount').textContent = popularCount;
+    }
+
+    // عرض المنتجات المنتظرة (للمدير)
+    function renderPendingProductsList() {
+      const el = document.getElementById('pendingProductsList');
+      const products = Object.values(pendingProducts);
+      
+      if (products.length === 0) {
+        el.innerHTML = '<div class="empty-state"><i class="fas fa-clock"></i><p>لا توجد منتجات في انتظار الموافقة</p></div>';
+        return;
+      }
+      
+      el.innerHTML = '';
+      
+      products.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'product-card';
+        div.innerHTML = `
+          <div class="product-source source-pending">في انتظار الموافقة</div>
+          <div class="store-name">
+            <i class="fas fa-store"></i>
+            <span>${p.storeName || 'متجر غير معروف'}</span>
+          </div>
+          <div class="product-header">
+            <div class="product-name">${p.name || 'بدون اسم'}</div>
+          </div>
+          <div class="product-barcode">${p.barcode || 'بدون باركود'}</div>
+          <div class="store-name">
+            <i class="fas fa-tag"></i>
+            <span>${getCategoryName(p.category)}</span>
+          </div>
+          <div class="product-price">${(p.price || 0).toLocaleString()} د.ع</div>
+          <div class="product-actions">
+            <button class="btn-action btn-action-success" onclick="approveProduct('${p.id}')" title="قبول المنتج">
+              <i class="fas fa-check"></i> قبول
+            </button>
+            <button class="btn-action btn-action-warning" onclick="rejectProduct('${p.id}')" title="رفض المنتج">
+              <i class="fas fa-times"></i> رفض
+            </button>
+          </div>
+        `;
+        el.appendChild(div);
+      });
+    }
+
+    // تحديث إحصائيات منتجات المستخدم
+    function updateMyProductsStats() {
+      const products = Object.values(myProducts);
+      document.getElementById('myProductsCount').textContent = products.length;
+      document.getElementById('myTotalProducts').textContent = products.length;
+    }
+
+    // تهيئة التبويبات
+    function initTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          
+          btn.classList.add('active');
+          document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+      });
+    }
+
+    // تهيئة أزرار الفئات
+    function initCategoryButtons() {
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          document.getElementById('pCategory').value = this.dataset.category;
+        });
+      });
+    }
+
+    // تهيئة خيارات نوع المنتج
+    function initProductTypeOptions() {
+      const personalOption = document.getElementById('personalOption');
+      const generalOption = document.getElementById('generalProductOption');
+      
+      if (personalOption) {
+        personalOption.addEventListener('click', function() {
+          selectProductType('personal');
+        });
+      }
+      
+      if (generalOption) {
+        generalOption.addEventListener('click', function() {
+          selectProductType('general');
+        });
+      }
+    }
+
+    // اختيار نوع المنتج
+    window.selectProductType = function(type) {
+      if (type === 'general') {
+        if (!currentUser) {
+          showNotification('يجب تسجيل الدخول أولاً', 'warning');
+          return;
+        }
+        
+        if (!isAdmin) {
+          showNotification('للمستخدمين العاديين: المنتجات العامة تحتاج موافقة المدير', 'info');
+        }
+      }
+      
+      productType = type;
+      
+      // إزالة النشاط من جميع الخيارات
+      document.querySelectorAll('.type-option').forEach(opt => {
+        opt.classList.remove('active');
+      });
+      
+      // إضافة النشاط للخيار المحدد
+      const optionToActivate = document.querySelector(`.type-option[data-type="${type}"]`);
+      if (optionToActivate) {
+        optionToActivate.classList.add('active');
+      }
+      
+      // تحديث عنوان النموذج
+      const formTitle = document.getElementById('formTitle');
+      if (!editingId) {
+        if (type === 'personal') {
+          formTitle.textContent = 'إضافة منتج شخصي';
+        } else {
+          formTitle.textContent = 'إضافة منتج عام' + (isAdmin ? ' (مدير)' : ' (يحتاج موافقة)');
+        }
+      }
+    };
+
+    // إنشاء أو تحديث منتج
+    window.createOrUpdateProduct = async function() {
+      const name = document.getElementById('pName').value.trim();
+      const price = parseFloat(document.getElementById('pPrice').value);
+      const stock = parseInt(document.getElementById('pStock').value);
+      const barcode = document.getElementById('pBarcode').value.trim();
+      const category = document.getElementById('pCategory').value;
+      
+      if (!name || !price || stock < 0) {
+        showNotification('يرجى ملء جميع الحقول المطلوبة بشكل صحيح', 'warning');
+        return;
+      }
+
+      // التحقق من وجود المستخدم
+      if (!currentUser || !currentUser.uid) {
+        showNotification('يجب تسجيل الدخول أولاً', 'warning');
+        return;
+      }
+      
+      const productData = {
+        name,
+        price,
+        stock,
+        barcode: barcode || '',
+        category,
+        storeName: currentUser.storeName,
+        addedBy: currentUser.uid,
+        updatedAt: Date.now()
+      };
+      
+      try {
+        if (editingId) {
+          // تحديث المنتج الحالي
+          if (productType === 'personal') {
+            await update(ref(db, `stores/${currentUser.uid}/products/${editingId}`), productData);
+            showNotification('تم تحديث المنتج الشخصي بنجاح', 'success');
+          } else {
+            if (!isAdmin) {
+              showNotification('فقط المدير يمكنه تحديث المنتجات العامة', 'error');
+              return;
+            }
+            await update(ref(db, `general/products/${editingId}`), productData);
+            showNotification('تم تحديث المنتج العام بنجاح', 'success');
+          }
+        } else {
+          // إضافة منتج جديد
+          productData.createdAt = Date.now();
+          
+          if (productType === 'personal') {
+            // إضافة منتج شخصي
+            const newRef = await push(ref(db, `stores/${currentUser.uid}/products`));
+            await set(newRef, productData);
+            showNotification('تم إضافة المنتج الشخصي بنجاح', 'success');
+          } else {
+            // إضافة منتج عام
+            productData.status = isAdmin ? 'approved' : 'pending';
+            productData.usageCount = 0;
+            
+            const newRef = await push(ref(db, 'general/products'));
+            await set(newRef, productData);
+            
+            if (isAdmin) {
+              showNotification('تم إضافة المنتج العام بنجاح', 'success');
+            } else {
+              showNotification('تم إضافة المنتج العام وسيتم مراجعته من قبل المدير', 'info');
+              
+              // إشعار المدير إذا كان هناك بوت تلجرام
+              if (currentUser.telegramBotToken && currentUser.telegramChatId) {
+                await notifyAdminAboutPendingProduct(name, barcode);
+              }
+            }
+          }
+        }
+        
+        clearForm();
+        await loadData();
+        
+        // الانتقال إلى التبويب المناسب
+        const targetTab = productType === 'personal' ? 'my-products' : 'general-store';
+        const tabBtn = document.querySelector(`[data-tab="${targetTab}"]`);
+        if (tabBtn) {
+          tabBtn.click();
+        }
+        
+      } catch (error) {
+        console.error('خطأ في حفظ المنتج:', error);
+        showNotification('خطأ في حفظ المنتج: ' + error.message, 'error');
+      }
+    };
+
+    // تعديل منتج
+    window.editProduct = function(id, type) {
+      editingId = id;
+      const products = type === 'personal' ? myProducts : generalProducts;
+      const product = products[id];
+      
+      if (!product) return;
+      
+      // تحديث نوع المنتج
+      productType = type;
+      
+      // تحديث خيارات النوع
+      document.querySelectorAll('.type-option').forEach(opt => {
+        opt.classList.remove('active');
+      });
+      
+      const optionToActivate = document.querySelector(`.type-option[data-type="${type}"]`);
+      if (optionToActivate) {
+        optionToActivate.classList.add('active');
+      }
+      
+      // تعبئة البيانات في النموذج
+      document.getElementById('pName').value = product.name || '';
+      document.getElementById('pPrice').value = product.price || '';
+      document.getElementById('pStock').value = product.stock || '';
+      document.getElementById('pBarcode').value = product.barcode || '';
+      
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.category === (product.category || 'other')) {
+          btn.classList.add('active');
+        }
+      });
+      document.getElementById('pCategory').value = product.category || 'other';
+      
+      // تحديث عنوان النموذج
+      const formTitle = type === 'personal' ? 'تعديل منتج شخصي' : 'تعديل منتج عام';
+      document.getElementById('formTitle').textContent = formTitle;
+      
+      // الانتقال إلى تبويب الإضافة
+      document.querySelector('[data-tab="add-product"]').click();
+    };
+
+    // تعديل الكمية
+    window.adjustStock = async function(id, type) {
+      const products = type === 'personal' ? myProducts : generalProducts;
+      const product = products[id];
+      
+      if (!product) return;
+      
+      const newStock = prompt(`تعديل كمية "${product.name}"\nالكمية الحالية: ${product.stock}\nأدخل الكمية الجديدة:`, product.stock);
+      
+      if (newStock === null) return;
+      
+      const stock = parseInt(newStock);
+      if (isNaN(stock) || stock < 0) {
+        showNotification('يرجى إدخال كمية صحيحة', 'warning');
+        return;
+      }
+      
+      try {
+        if (type === 'personal') {
+          await update(ref(db, `stores/${currentUser.uid}/products/${id}`), {
+            stock: stock,
+            updatedAt: Date.now()
+          });
+          showNotification('تم تحديث الكمية بنجاح', 'success');
+        } else {
+          if (!isAdmin) {
+            showNotification('فقط المدير يمكنه تحديث المنتجات العامة', 'error');
+            return;
+          }
+          await update(ref(db, `general/products/${id}`), {
+            stock: stock,
+            updatedAt: Date.now()
+          });
+          showNotification('تم تحديث الكمية بنجاح', 'success');
+        }
+        
+        await loadData();
+      } catch (error) {
+        console.error('خطأ في تحديث الكمية:', error);
+        showNotification('خطأ في تحديث الكمية: ' + error.message, 'error');
+      }
+    };
+
+    // حذف منتج
+    window.deleteProduct = async function(id, type) {
+      if (!confirm('هل تريد حذف هذا المنتج؟\nهذا الإجراء لا يمكن التراجع عنه.')) return;
+      
+      try {
+        if (type === 'personal') {
+          await remove(ref(db, `stores/${currentUser.uid}/products/${id}`));
+          delete myProducts[id];
+        } else {
+          if (!isAdmin) {
+            showNotification('فقط المدير يمكنه حذف المنتجات العامة', 'error');
+            return;
+          }
+          await remove(ref(db, `general/products/${id}`));
+          delete generalProducts[id];
+        }
+        
+        showNotification('تم حذف المنتج بنجاح', 'success');
+        loadData();
+      } catch (error) {
+        console.error('خطأ في حذف المنتج:', error);
+        showNotification('خطأ في حذف المنتج: ' + error.message, 'error');
+      }
+    };
+
+    // عرض نافذة استيراد منتج
+    window.showImportModal = function(id) {
+      const product = generalProducts[id];
+      if (!product) return;
+      
+      productToImport = product;
+      document.getElementById('importName').value = product.name || '';
+      document.getElementById('importBarcode').value = product.barcode || '';
+      document.getElementById('importModal').style.display = 'flex';
+    };
+
+    // إغلاق نافذة الاستيراد
+    window.closeImportModal = function() {
+      document.getElementById('importModal').style.display = 'none';
+      productToImport = null;
+    };
+
+    // تأكيد استيراد منتج
+    window.confirmImport = async function() {
+      if (!productToImport) return;
+      
+      const price = parseFloat(document.getElementById('importPrice').value);
+      const stock = parseInt(document.getElementById('importStock').value);
+      
+      if (!price || isNaN(price) || price <= 0) {
+        showNotification('يرجى إدخال سعر صحيح', 'warning');
+        return;
+      }
+      
+      if (!stock || isNaN(stock) || stock < 0) {
+        showNotification('يرجى إدخال كمية صحيحة', 'warning');
+        return;
+      }
+      
+      const importedProduct = {
+        name: productToImport.name,
+        barcode: productToImport.barcode || '',
+        price: price,
+        stock: stock,
+        category: productToImport.category || 'other',
+        importedFrom: productToImport.id,
+        storeName: currentUser.storeName,
+        addedBy: currentUser.uid,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      };
+      
+      try {
+        const newRef = await push(ref(db, `stores/${currentUser.uid}/products`));
+        await set(newRef, importedProduct);
+        
+        // زيادة عداد الاستخدام
+        const newUsageCount = (productToImport.usageCount || 0) + 1;
+        await update(ref(db, `general/products/${productToImport.id}`), {
+          usageCount: newUsageCount
+        });
+        
+        showNotification('تم استيراد المنتج بنجاح إلى مخزونك', 'success');
+        closeImportModal();
+        loadMyProducts();
+        loadGeneralProducts();
+        
+      } catch (error) {
+        console.error('خطأ في استيراد المنتج:', error);
+        showNotification('خطأ في استيراد المنتج: ' + error.message, 'error');
+      }
+    };
+
+    // قبول منتج (للمدير)
+    window.approveProduct = async function(id) {
+      if (!isAdmin) return;
+      
+      try {
+        await update(ref(db, `general/products/${id}`), {
+          status: 'approved',
+          approvedAt: Date.now()
+        });
+        
+        showNotification('تم قبول المنتج بنجاح', 'success');
+        loadPendingProducts();
+        loadGeneralProducts();
+      } catch (error) {
+        console.error('خطأ في قبول المنتج:', error);
+        showNotification('خطأ في قبول المنتج: ' + error.message, 'error');
+      }
+    };
+
+    // رفض منتج (للمدير)
+    window.rejectProduct = async function(id) {
+      if (!isAdmin) return;
+      
+      try {
+        await remove(ref(db, `general/products/${id}`));
+        showNotification('تم رفض المنتج بنجاح', 'success');
+        loadPendingProducts();
+      } catch (error) {
+        console.error('خطأ في رفض المنتج:', error);
+        showNotification('خطأ في رفض المنتج: ' + error.message, 'error');
+      }
+    };
+
+    // مسح النموذج
+    window.clearForm = function() {
+      editingId = null;
+      document.getElementById('pName').value = '';
+      document.getElementById('pPrice').value = '';
+      document.getElementById('pStock').value = '';
+      document.getElementById('pBarcode').value = '';
+      
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.category === 'other') {
+          btn.classList.add('active');
+        }
+      });
+      document.getElementById('pCategory').value = 'other';
+      
+      // إعادة تعيين نوع المنتج إلى الشخصي
+      productType = 'personal';
+      
+      // إعادة تعيين خيارات النوع
+      document.querySelectorAll('.type-option').forEach(opt => {
+        opt.classList.remove('active');
+      });
+      
+      const personalOption = document.getElementById('personalOption');
+      if (personalOption) {
+        personalOption.classList.add('active');
+      }
+      
+      document.getElementById('formTitle').textContent = 'إضافة منتج جديد';
+    };
+
+    // فتح ماسح الباركود
+    window.openScanner = async function(mode) {
+      scannerMode = mode;
+      document.getElementById('scannerModal').style.display = 'flex';
+      manualInputVisible = false;
+      document.getElementById('manualInputSection').style.display = 'none';
+      
+      document.getElementById('scanResult').className = 'scan-result result-info';
+      document.getElementById('scanResult').innerHTML = `
+        <div>
+          <i class="fas fa-barcode"></i>
+          <span>وجّه الكاميرا نحو الباركود</span>
+        </div>
+      `;
+      document.getElementById('scannedCount').textContent = '0';
+      document.getElementById('scanAccuracy').textContent = '0%';
+      
+      try {
+        await startCamera();
+      } catch (error) {
+        console.error('خطأ في تشغيل الكاميرا:', error);
+        showScanResult('خطأ في تشغيل الكاميرا. تأكد من السماح باستخدام الكاميرا.', 'error');
+      }
+    };
+    
+    // تشغيل الكاميرا
+    async function startCamera() {
+      if (currentStream) {
+        stopCamera();
+      }
+      
+      const constraints = {
+        video: {
+          facingMode: facingMode,
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        },
+        audio: false
+      };
+      
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        currentStream = stream;
+        const videoElement = document.getElementById('scanner-video');
+        videoElement.srcObject = stream;
+        scannerActive = true;
+      } catch (error) {
+        console.error('خطأ في الوصول للكاميرا:', error);
+        showScanResult('لا يمكن الوصول للكاميرا. تأكد من السماح باستخدام الكاميرا.', 'error');
+      }
+    }
+    
+    // إيقاف الكاميرا
+    function stopCamera() {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
+      }
+      scannerActive = false;
+    }
+    
+    // تبديل إظهار الإدخال اليدوي
+    window.toggleManualInput = function() {
+      manualInputVisible = !manualInputVisible;
+      const manualSection = document.getElementById('manualInputSection');
+      manualSection.style.display = manualInputVisible ? 'block' : 'none';
+      
+      if (manualInputVisible) {
+        document.getElementById('manualBarcodeInput').focus();
+      }
+    };
+    
+    // معالجة الباركود المدخل يدوياً
+    window.processManualBarcode = function() {
+      const barcode = document.getElementById('manualBarcodeInput').value.trim();
+      
+      if (!barcode) {
+        showNotification('يرجى إدخال باركود', 'warning');
+        return;
+      }
+      
+      processBarcodeResult(barcode);
+      document.getElementById('manualBarcodeInput').value = '';
+    };
+    
+    // معالجة نتيجة الباركود
+    function processBarcodeResult(barcode) {
+      document.getElementById('scannedCount').textContent = '1';
+      document.getElementById('scanAccuracy').textContent = '100%';
+      
+      showScanResult(`تم اكتشاف الباركود: ${barcode}`, 'success');
+      playBeepSound();
+      
+      setTimeout(() => {
+        useBarcode(barcode);
+      }, 1000);
+    }
+    
+    // استخدام الباركود
+    function useBarcode(barcode) {
+      switch (scannerMode) {
+        case 'form':
+          document.getElementById('pBarcode').value = barcode;
+          closeScanner();
+          break;
+          
+        case 'search-my':
+          document.getElementById('searchMyProducts').value = barcode;
+          renderMyProductsList();
+          closeScanner();
+          break;
+          
+        case 'search-general':
+          document.getElementById('searchGeneralProducts').value = barcode;
+          renderGeneralProductsList();
+          closeScanner();
+          break;
+      }
+    }
+    
+    // عرض نتيجة المسح
+    function showScanResult(message, type = 'info') {
+      const resultEl = document.getElementById('scanResult');
+      let icon = 'fa-barcode';
+      let className = 'result-info';
+      
+      if (type === 'success') {
+        icon = 'fa-check-circle';
+        className = 'result-success';
+      } else if (type === 'error') {
+        icon = 'fa-exclamation-circle';
+        className = 'result-error';
+      }
+      
+      resultEl.className = `scan-result ${className}`;
+      resultEl.innerHTML = `
+        <div>
+          <i class="fas ${icon}"></i>
+          <span>${message}</span>
+        </div>
+      `;
+    }
+    
+    // تشغيل صوت التنبيه
+    function playBeepSound() {
+      const beepSound = document.getElementById('beepSound');
+      if (beepSound) {
+        beepSound.currentTime = 0;
+        beepSound.play().catch(e => console.log('خطأ في تشغيل الصوت:', e));
+      }
+    }
+    
+    // إغلاق الماسح
+    window.closeScanner = function() {
+      stopCamera();
+      document.getElementById('scannerModal').style.display = 'none';
+      scannerActive = false;
+    };
+    
+    // تبديل الكاميرا
+    window.switchCamera = function() {
+      facingMode = facingMode === 'environment' ? 'user' : 'environment';
+      startCamera();
+    };
+    
+    // فتح الإدخال اليدوي للباركود
+    window.openManualBarcode = function(mode) {
+      scannerMode = mode;
+      document.getElementById('scannerModal').style.display = 'flex';
+      manualInputVisible = true;
+      document.getElementById('manualInputSection').style.display = 'block';
+      document.getElementById('manualBarcodeInput').value = '';
+      document.getElementById('manualBarcodeInput').focus();
+      
+      stopCamera();
+      
+      document.getElementById('scanResult').className = 'scan-result result-info';
+      document.getElementById('scanResult').innerHTML = `
+        <div>
+          <i class="fas fa-keyboard"></i>
+          <span>أدخل الباركود يدوياً</span>
+        </div>
+      `;
+    };
+
+    // إشعار المدير عن منتج منتظر
+    async function notifyAdminAboutPendingProduct(productName, barcode) {
+      try {
+        // الحصول على بيانات المدير
+        const adminRef = ref(db, 'users');
+        const snapshot = await get(adminRef);
+        const users = snapshot.val();
+        
+        let adminUser = null;
+        for (const uid in users) {
+          if (users[uid] && users[uid].email === ADMIN_EMAIL) {
+            adminUser = users[uid];
+            break;
+          }
+        }
+        
+        if (adminUser && adminUser.telegramBotToken && adminUser.telegramChatId) {
+          const message = `🆕 منتج جديد ينتظر الموافقة\n\n`
+            + `📦 المنتج: ${productName}\n`
+            + `📋 الباركود: ${barcode || 'بدون باركود'}\n`
+            + `🏪 المتجر: ${currentUser.storeName}\n`
+            + `📧 البريد: ${currentUser.email}\n`
+            + `⏰ الوقت: ${new Date().toLocaleString('ar-IQ')}`;
+          
+          const url = `https://api.telegram.org/bot${adminUser.telegramBotToken}/sendMessage`;
+          
+          await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: adminUser.telegramChatId,
+              text: message,
+              parse_mode: 'HTML'
+            })
+          });
+        }
+      } catch (error) {
+        console.error('خطأ في إرسال الإشعار:', error);
+      }
+    }
+
+    // الحصول على اسم الفئة
+    function getCategoryName(category) {
+      const categories = {
+        'food': 'غذائية',
+        'drinks': 'مشروبات',
+        'dairy': 'ألبان',
+        'cleaning': 'تنظيف',
+        'personal': 'عناية شخصية',
+        'other': 'أخرى'
+      };
+      return categories[category] || 'أخرى';
+    }
+
+    // إشعارات النظام
+    function showNotification(message, type = 'info') {
+      // إزالة الإشعارات القديمة
+      const oldNotifications = document.querySelectorAll('.notification');
+      oldNotifications.forEach(n => n.remove());
+      
+      // إنشاء إشعار جديد
+      const notification = document.createElement('div');
+      notification.className = `notification notification-${type}`;
+      notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+          <div>${message}</div>
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // إزالة الإشعار بعد 5 ثوان
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.style.opacity = '0';
+          notification.style.transform = 'translateX(100%)';
+          setTimeout(() => {
+            if (notification.parentNode) {
+              notification.parentNode.removeChild(notification);
+            }
+          }, 300);
+        }
+      }, 5000);
+    }
+
+    // تسجيل الدخول بالبريد الإلكتروني
+    window.loginWithEmail = async function() {
+      const email = prompt('أدخل بريدك الإلكتروني:');
+      if (!email) return;
+      
+      const password = prompt('أدخل كلمة المرور:');
+      if (!password) return;
+      
+      try {
+        // محاولة تسجيل الدخول
+        await signInWithEmailAndPassword(auth, email, password);
+        showNotification('تم تسجيل الدخول بنجاح!', 'success');
+      } catch (error) {
+        console.error('خطأ في تسجيل الدخول:', error);
+        
+        if (error.code === 'auth/user-not-found') {
+          const confirmCreate = confirm('حساب غير موجود. هل تريد إنشاء حساب جديد بهذا البريد؟');
+          if (confirmCreate) {
+            try {
+              // إنشاء حساب جديد
+              const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+              
+              // طلب اسم المتجر
+              const storeName = prompt('أدخل اسم متجرك:', email.split('@')[0]) || email.split('@')[0];
+              
+              showNotification('تم إنشاء حساب جديد بنجاح!', 'success');
+              window.location.reload();
+            } catch (createError) {
+              console.error('خطأ في إنشاء الحساب:', createError);
+              showNotification('خطأ في إنشاء الحساب: ' + createError.message, 'error');
+            }
+          }
+        } else if (error.code === 'auth/wrong-password') {
+          showNotification('كلمة المرور غير صحيحة', 'error');
+        } else {
+          showNotification('خطأ في تسجيل الدخول: ' + error.message, 'error');
+        }
+      }
+    };
+
+    // تسجيل الخروج
+    window.logout = async function() {
+      if (!confirm('هل تريد تسجيل الخروج؟')) return;
+      
+      try {
+        await signOut(auth);
+        localStorage.removeItem('inventory_user');
+        showNotification('تم تسجيل الخروج بنجاح', 'success');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } catch (error) {
+        console.error('خطأ في تسجيل الخروج:', error);
+        showNotification('حدث خطأ أثناء تسجيل الخروج: ' + error.message, 'error');
+      }
+    };
+
+    // تصدير المنتجات
+    window.exportMyProducts = function() {
+      const data = JSON.stringify(myProducts, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `منتجات_${currentUser.storeName}_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showNotification('تم تصدير المنتجات بنجاح', 'success');
+    };
+
+    // تحديث المخزن العام
+    window.syncWithGeneralStore = function() {
+      loadGeneralProducts();
+      showNotification('تم تحديث المخزن العام', 'success');
+    };
+
+    // إعدادات البحث
+    document.getElementById('searchMyProducts').addEventListener('input', renderMyProductsList);
+    document.getElementById('searchGeneralProducts').addEventListener('input', renderGeneralProductsList);
+    
+    // إعدادات الإدخال اليدوي
+    document.getElementById('manualBarcodeInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        processManualBarcode();
+      }
+    });
+
+    // تهيئة النظام
+    function init() {
+      initTabs();
+      initCategoryButtons();
+      initProductTypeOptions();
+      
+      // إضافة حدث لإغلاق النافذة المنبثقة بالضغط على ESC
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          if (document.getElementById('scannerModal').style.display === 'flex') {
+            closeScanner();
+          }
+          if (document.getElementById('importModal').style.display === 'flex') {
+            closeImportModal();
+          }
+        }
+      });
+    }
+
+    // بدء التشغيل
+    window.onload = init;
+  </script>
+</body>
+</html>

@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>إنشاء حساب - نظام DNRX</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      padding: 16px;
+      background: #fff;
+      color: #000;
+      line-height: 1.5;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 500px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #000;
+    }
+    
+    h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .subtitle {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .register-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 18px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      font-size: 15px;
+      border-radius: 6px;
+      background: #fff;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #000;
+    }
+    
+    .register-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #000;
+      color: #fff;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+    
+    .register-btn:hover {
+      background: #333;
+    }
+    
+    .register-btn:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
+    
+    .google-btn {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #fff;
+      color: #000;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+    
+    .google-btn:hover {
+      background: #f5f5f5;
+      border-color: #000;
+    }
+    
+    .message {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      text-align: center;
+      font-size: 13px;
+      display: none;
+    }
+    
+    .success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+    
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+    }
+    
+    .info {
+      background: #e3f2fd;
+      color: #1565c0;
+      border: 1px solid #bbdefb;
+    }
+    
+    .links {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    
+    .link {
+      color: #000;
+      text-decoration: none;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin: 0 10px;
+      transition: color 0.2s;
+    }
+    
+    .link:hover {
+      color: #666;
+      text-decoration: underline;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 1px solid #ddd;
+      color: #666;
+      font-size: 12px;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+      
+      .register-card {
+        padding: 18px;
+      }
+      
+      h1 {
+        font-size: 20px;
+      }
+      
+      .links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+    
+    .password-hint {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+      display: block;
+    }
+    
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+    }
+    
+    .divider::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: 0;
+      left: 0;
+      height: 1px;
+      background: #eee;
+    }
+    
+    .divider span {
+      background: #fff;
+      padding: 0 15px;
+      color: #666;
+      font-size: 13px;
+      position: relative;
+    }
+    
+    .date-input-group {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .date-input-group select {
+      flex: 1;
+    }
+    
+    .select2-container--default .select2-selection--single {
+      height: 44px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 42px;
+    }
+    
+    .phone-group {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .phone-group .phone-code {
+      width: 120px;
+      flex-shrink: 0;
+    }
+    
+    .phone-group .phone-number {
+      flex: 1;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-user-plus"></i> إنشاء حساب جديد</h1>
+      <p class="subtitle">املأ البيانات لإنشاء متجرك الخاص</p>
+    </header>
+    
+    <div class="message info">
+      <i class="fas fa-info-circle"></i> 
+      يتم إنشاء حساب متجر خاص بك تلقائياً
+    </div>
+    
+    <div class="register-card">
+      <div id="message" class="message"></div>
+      
+      <div class="form-group">
+        <label for="fullName">
+          <i class="fas fa-user"></i> الاسم الكامل *
+        </label>
+        <input 
+          type="text" 
+          id="fullName" 
+          placeholder="ادخل اسمك الكامل"
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="birthDate">
+          <i class="fas fa-birthday-cake"></i> تاريخ الميلاد *
+        </label>
+        <div class="date-input-group">
+          <select id="birthDay">
+            <option value="">اليوم</option>
+            <script>
+              for(let i = 1; i <= 31; i++) {
+                document.write(`<option value="${i}">${i}</option>`);
+              }
+            </script>
+          </select>
+          <select id="birthMonth">
+            <option value="">الشهر</option>
+            <option value="1">يناير</option>
+            <option value="2">فبراير</option>
+            <option value="3">مارس</option>
+            <option value="4">أبريل</option>
+            <option value="5">مايو</option>
+            <option value="6">يونيو</option>
+            <option value="7">يوليو</option>
+            <option value="8">أغسطس</option>
+            <option value="9">سبتمبر</option>
+            <option value="10">أكتوبر</option>
+            <option value="11">نوفمبر</option>
+            <option value="12">ديسمبر</option>
+          </select>
+          <select id="birthYear">
+            <option value="">السنة</option>
+            <script>
+              const currentYear = new Date().getFullYear();
+              for(let i = currentYear; i >= 1950; i--) {
+                document.write(`<option value="${i}">${i}</option>`);
+              }
+            </script>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">
+          <i class="fas fa-envelope"></i> البريد الإلكتروني *
+        </label>
+        <input 
+          type="email" 
+          id="email" 
+          placeholder="ادخل بريدك الإلكتروني"
+          autocomplete="email"
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">
+          <i class="fas fa-phone"></i> رقم الهاتف *
+        </label>
+        <div class="phone-group">
+          <select id="phoneCode" class="phone-code">
+            <option value="+966">+966</option>
+          </select>
+          <input 
+            type="tel" 
+            id="phone" 
+            class="phone-number"
+            placeholder="5xxxxxxxx"
+            required
+          >
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="storeName">
+          <i class="fas fa-store"></i> اسم المتجر *
+        </label>
+        <input 
+          type="text" 
+          id="storeName" 
+          placeholder="أدخل اسم متجرك"
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="storeType">
+          <i class="fas fa-tags"></i> نوع المحل *
+        </label>
+        <select id="storeType" required>
+          <option value="">اختر نوع المحل</option>
+          <option value="grocery">بقالة وسوبرماركت</option>
+          <option value="clothing">ملابس وأزياء</option>
+          <option value="electronics">إلكترونيات وأجهزة</option>
+          <option value="pharmacy">صيدلية</option>
+          <option value="restaurant">مطعم وكافيه</option>
+          <option value="jewelry">مجوهرات وساعات</option>
+          <option value="furniture">أثاث ومنزل</option>
+          <option value="sports">رياضة ومستلزمات</option>
+          <option value="beauty">تجميل وعناية</option>
+          <option value="books">كتب ومستلزمات</option>
+          <option value="other">أخرى</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="country">
+          <i class="fas fa-globe"></i> الدولة *
+        </label>
+        <select id="country" class="country-select" required>
+          <option value="">ابحث عن دولة...</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="city">
+          <i class="fas fa-city"></i> المدينة *
+        </label>
+        <select id="city" class="city-select" required>
+          <option value="">اختر الدولة أولاً</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="currency">
+          <i class="fas fa-money-bill-wave"></i> العملة *
+        </label>
+        <select id="currency" class="currency-select" required>
+          <option value="">اختر العملة...</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">
+          <i class="fas fa-lock"></i> كلمة المرور *
+        </label>
+        <input 
+          type="password" 
+          id="password" 
+          placeholder="ادخل كلمة مرور قوية"
+          autocomplete="new-password"
+          minlength="6"
+          required
+        >
+        <span class="password-hint">يجب أن تكون كلمة المرور 6 أحرف على الأقل</span>
+      </div>
+      
+      <div class="form-group">
+        <label for="confirmPassword">
+          <i class="fas fa-lock"></i> تأكيد كلمة المرور *
+        </label>
+        <input 
+          type="password" 
+          id="confirmPassword" 
+          placeholder="أعد إدخال كلمة المرور"
+          autocomplete="new-password"
+          required
+        >
+      </div>
+      
+      <button class="register-btn" id="registerBtn">
+        <i class="fas fa-user-plus"></i> إنشاء حساب
+      </button>
+      
+      <div class="divider">
+        <span>أو</span>
+      </div>
+      
+      <button class="google-btn" id="googleBtn">
+        <i class="fab fa-google"></i> التسجيل عبر Google
+      </button>
+    </div>
+    
+    <div class="links">
+      <a href="login.html" class="link">
+        <i class="fas fa-sign-in-alt"></i> لديك حساب؟ سجل دخول
+      </a>
+    </div>
+    
+    <footer>
+      <p>نظام DNRX - الإصدار 1.0 | صفحة التسجيل</p>
+    </footer>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script type="module">
+    // استيراد Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword,
+      GoogleAuthProvider,
+      signInWithPopup
+    } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      setDoc,
+      serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+
+    // إعدادات Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+      authDomain: "zio3-8ffdd.firebaseapp.com",
+      databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+      projectId: "zio3-8ffdd",
+      storageBucket: "zio3-8ffdd.firebasestorage.app",
+      messagingSenderId: "560939348415",
+      appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+      measurementId: "G-CVN2B2D0RD"
+    };
+    
+    // تهيئة Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    
+    const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
+    
+    // بيانات الدول مع رمز الهاتف والعملة الافتراضية
+    const countries = [
+      {id: 'SA', name: 'السعودية', phoneCode: '+966', currency: 'SAR'},
+      {id: 'AE', name: 'الإمارات', phoneCode: '+971', currency: 'AED'},
+      {id: 'QA', name: 'قطر', phoneCode: '+974', currency: 'QAR'},
+      {id: 'KW', name: 'الكويت', phoneCode: '+965', currency: 'KWD'},
+      {id: 'BH', name: 'البحرين', phoneCode: '+973', currency: 'BHD'},
+      {id: 'OM', name: 'عُمان', phoneCode: '+968', currency: 'OMR'},
+      {id: 'JO', name: 'الأردن', phoneCode: '+962', currency: 'JOD'},
+      {id: 'LB', name: 'لبنان', phoneCode: '+961', currency: 'LBP'},
+      {id: 'EG', name: 'مصر', phoneCode: '+20', currency: 'EGP'},
+      {id: 'MA', name: 'المغرب', phoneCode: '+212', currency: 'MAD'},
+      {id: 'TN', name: 'تونس', phoneCode: '+216', currency: 'TND'},
+      {id: 'DZ', name: 'الجزائر', phoneCode: '+213', currency: 'DZD'},
+      {id: 'IQ', name: 'العراق', phoneCode: '+964', currency: 'IQD'},
+      {id: 'SY', name: 'سوريا', phoneCode: '+963', currency: 'SYP'},
+      {id: 'YE', name: 'اليمن', phoneCode: '+967', currency: 'YER'},
+      {id: 'SD', name: 'السودان', phoneCode: '+249', currency: 'SDG'},
+      {id: 'LY', name: 'ليبيا', phoneCode: '+218', currency: 'LYD'},
+      {id: 'US', name: 'الولايات المتحدة', phoneCode: '+1', currency: 'USD'},
+      {id: 'GB', name: 'المملكة المتحدة', phoneCode: '+44', currency: 'GBP'},
+      {id: 'CA', name: 'كندا', phoneCode: '+1', currency: 'CAD'},
+      {id: 'AU', name: 'أستراليا', phoneCode: '+61', currency: 'AUD'},
+      {id: 'FR', name: 'فرنسا', phoneCode: '+33', currency: 'EUR'},
+      {id: 'DE', name: 'ألمانيا', phoneCode: '+49', currency: 'EUR'},
+      {id: 'IT', name: 'إيطاليا', phoneCode: '+39', currency: 'EUR'},
+      {id: 'ES', name: 'إسبانيا', phoneCode: '+34', currency: 'EUR'},
+      {id: 'TR', name: 'تركيا', phoneCode: '+90', currency: 'TRY'},
+      {id: 'IN', name: 'الهند', phoneCode: '+91', currency: 'INR'},
+      {id: 'CN', name: 'الصين', phoneCode: '+86', currency: 'CNY'},
+      {id: 'JP', name: 'اليابان', phoneCode: '+81', currency: 'JPY'},
+      {id: 'KR', name: 'كوريا الجنوبية', phoneCode: '+82', currency: 'KRW'},
+      {id: 'RU', name: 'روسيا', phoneCode: '+7', currency: 'RUB'},
+      {id: 'BR', name: 'البرازيل', phoneCode: '+55', currency: 'BRL'}
+    ];
+    
+    // المدن لكل دولة
+    const citiesByCountry = {
+      'SA': ['الرياض', 'جدة', 'مكة المكرمة', 'المدينة المنورة', 'الدمام', 'الخبر', 'الطائف', 'تبوك', 'بريدة', 'خميس مشيط', 'حائل', 'جازان', 'نجران', 'ينبع', 'أبها'],
+      'AE': ['أبو ظبي', 'دبي', 'الشارقة', 'عجمان', 'أم القيوين', 'رأس الخيمة', 'الفجيرة', 'العين'],
+      'QA': ['الدوحة', 'الريان', 'أم صلال', 'الخور', 'الوكرة', 'الشمال', 'الجميلية'],
+      'KW': ['الكويت', 'حولي', 'الفروانية', 'الأحمدي', 'الجهراء', 'مبارك الكبير'],
+      'BH': ['المنامة', 'المحرق', 'الرفاع', 'حدائق الحورة', 'مدينة عيسى', 'سترة', 'الدراز'],
+      'OM': ['مسقط', 'صلالة', 'صور', 'نزوى', 'صحار', 'الرستاق', 'البريمي'],
+      'JO': ['عمان', 'الزرقاء', 'إربد', 'العقبة', 'الكرك', 'معان', 'مادبا', 'السلط'],
+      'LB': ['بيروت', 'طرابلس', 'صيدا', 'صور', 'زحلة', 'جونيه', 'بعبدا'],
+      'EG': ['القاهرة', 'الإسكندرية', 'الجيزة', 'شرم الشيخ', 'الأقصر', 'أسوان', 'بورسعيد', 'السويس', 'دمياط', 'المنصورة', 'طنطا', 'الفيوم', 'بني سويف', 'المنيا', 'سوهاج', 'قنا', 'أسيوط'],
+      'IQ': ['بغداد', 'البصرة', 'الموصل', 'أربيل', 'السليمانية', 'كركوك', 'الناصرية', 'العمارة', 'الحلة', 'الكوت', 'ذي قار', 'بابل', 'النجف', 'كربلاء', 'الأنبار', 'ديالى', 'واسط', 'ميسان'],
+      'SY': ['دمشق', 'حلب', 'حمص', 'اللاذقية', 'حماة', 'طرطوس', 'دير الزور', 'السويداء', 'الحسكة', 'الرقة', 'إدلب'],
+      'YE': ['صنعاء', 'عدن', 'تعز', 'الحديدة', 'إب', 'ذمار', 'المكلا', 'سيئون', 'شبوه', 'حجة', 'مأرب', 'الجوف', 'عمران', 'البيضاء', 'ضالع', 'لحج', 'أبين'],
+      'DZ': ['الجزائر', 'وهران', 'قسنطينة', 'عنابة', 'باتنة', 'بليدة', 'سطيف', 'الشلف', 'تلمسان', 'الجلفة', 'سطيف', 'سكيكدة', 'تيارت', 'أدرار'],
+      'MA': ['الرباط', 'الدار البيضاء', 'فاس', 'مراكش', 'طنجة', 'مكناس', 'أكادير', 'وجدة', 'تطوان', 'العيون', 'القنيطرة', 'بني ملال', 'خريبكة', 'تازة'],
+      'TN': ['تونس', 'صفاقس', 'سوسة', 'قابس', 'بنزرت', 'القيروان', 'باجة', 'قفصة', 'المهدية', 'مدنين', 'نابل', 'الحوضين', 'تطاوين', 'الكاف'],
+      'US': ['نيويورك', 'لوس أنجلوس', 'شيكاغو', 'هيوستن', 'فينيكس', 'فيلادلفيا', 'سان أنطونيو', 'سان دييغو', 'دالاس', 'سان خوسيه'],
+      'GB': ['لندن', 'برمنغهام', 'مانشستر', 'غلاسكو', 'ليفربول', 'ليدز', 'شيفيلد', 'بريستول', 'كارديف', 'إدنبرة'],
+      'CA': ['تورونتو', 'مونتريال', 'فانكوفر', 'كالغاري', 'إدمونتون', 'أوتاوا', 'وينيبيغ', 'كيبيك'],
+      'AU': ['سيدني', 'ملبورن', 'بريزبان', 'بيرث', 'أديلايد', 'كانبرا', 'هوبارت', 'داروين'],
+      'FR': ['باريس', 'مرسيليا', 'ليون', 'تولوز', 'نيس', 'نانت', 'ستراسبورغ', 'مونبلييه'],
+      'DE': ['برلين', 'هامبورغ', 'ميونخ', 'كولونيا', 'فرانكفورت', 'شتوتغارت', 'دوسلدورف', 'دورتموند'],
+      'IT': ['روما', 'ميلانو', 'نابولي', 'تورينو', 'باليرمو', 'جنوة', 'بولونيا', 'فلورنسا']
+    };
+    
+    // جميع العملات
+    const currencies = [
+      {id: 'SAR', name: 'ريال سعودي', symbol: '﷼'},
+      {id: 'AED', name: 'درهم إماراتي', symbol: 'د.إ'},
+      {id: 'QAR', name: 'ريال قطري', symbol: 'ر.ق'},
+      {id: 'KWD', name: 'دينار كويتي', symbol: 'د.ك'},
+      {id: 'BHD', name: 'دينار بحريني', symbol: '.د.ب'},
+      {id: 'OMR', name: 'ريال عماني', symbol: 'ر.ع.'},
+      {id: 'JOD', name: 'دينار أردني', symbol: 'د.ا'},
+      {id: 'EGP', name: 'جنيه مصري', symbol: 'ج.م'},
+      {id: 'LBP', name: 'ليرة لبنانية', symbol: 'ل.ل'},
+      {id: 'SYP', name: 'ليرة سورية', symbol: 'ل.س'},
+      {id: 'YER', name: 'ريال يمني', symbol: 'ر.ي'},
+      {id: 'IQD', name: 'دينار عراقي', symbol: 'د.ع'},
+      {id: 'DZD', name: 'دينار جزائري', symbol: 'د.ج'},
+      {id: 'MAD', name: 'درهم مغربي', symbol: 'د.م.'},
+      {id: 'TND', name: 'دينار تونسي', symbol: 'د.ت'},
+      {id: 'LYD', name: 'دينار ليبي', symbol: 'د.ل'},
+      {id: 'SDG', name: 'جنيه سوداني', symbol: 'ج.س.'},
+      {id: 'USD', name: 'دولار أمريكي', symbol: '$'},
+      {id: 'EUR', name: 'يورو', symbol: '€'},
+      {id: 'GBP', name: 'جنيه إسترليني', symbol: '£'},
+      {id: 'CAD', name: 'دولار كندي', symbol: 'CA$'},
+      {id: 'AUD', name: 'دولار أسترالي', symbol: 'A$'},
+      {id: 'NZD', name: 'دولار نيوزيلندي', symbol: 'NZ$'},
+      {id: 'CHF', name: 'فرنك سويسري', symbol: 'Fr'},
+      {id: 'JPY', name: 'ين ياباني', symbol: '¥'},
+      {id: 'CNY', name: 'يوان صيني', symbol: '¥'},
+      {id: 'KRW', name: 'وون كوري جنوبي', symbol: '₩'},
+      {id: 'INR', name: 'روبية هندية', symbol: '₹'},
+      {id: 'RUB', name: 'روبل روسي', symbol: '₽'},
+      {id: 'TRY', name: 'ليرة تركية', symbol: '₺'},
+      {id: 'BRL', name: 'ريال برازيلي', symbol: 'R$'},
+      {id: 'MXN', name: 'بيزو مكسيكي', symbol: '$'},
+      {id: 'ZAR', name: 'راند جنوب أفريقي', symbol: 'R'},
+      {id: 'SEK', name: 'كرونة سويدية', symbol: 'kr'},
+      {id: 'NOK', name: 'كرونة نرويجية', symbol: 'kr'},
+      {id: 'DKK', name: 'كرونة دنماركية', symbol: 'kr'},
+      {id: 'PLN', name: 'زلوتي بولندي', symbol: 'zł'},
+      {id: 'HUF', name: 'فورنت مجري', symbol: 'Ft'},
+      {id: 'CZK', name: 'كرونة تشيكية', symbol: 'Kč'},
+      {id: 'ILS', name: 'شيكل إسرائيلي', symbol: '₪'},
+      {id: 'PKR', name: 'روبية باكستانية', symbol: '₨'},
+      {id: 'BDT', name: 'تاكا بنغلاديشي', symbol: '৳'},
+      {id: 'THB', name: 'باخت تايلاندي', symbol: '฿'},
+      {id: 'IDR', name: 'روبية إندونيسية', symbol: 'Rp'},
+      {id: 'MYR', name: 'رينغيت ماليزي', symbol: 'RM'},
+      {id: 'PHP', name: 'بيزو فلبيني', symbol: '₱'},
+      {id: 'SGD', name: 'دولار سنغافوري', symbol: 'S$'},
+      {id: 'HKD', name: 'دولار هونغ كونغ', symbol: 'HK$'},
+      {id: 'TWD', name: 'دولار تايواني', symbol: 'NT$'}
+    ];
+    
+    // خريطة العملات للدول
+    const countryCurrencyMap = {
+      'SA': 'SAR', 'AE': 'AED', 'QA': 'QAR', 'KW': 'KWD', 'BH': 'BHD',
+      'OM': 'OMR', 'JO': 'JOD', 'LB': 'LBP', 'EG': 'EGP', 'MA': 'MAD',
+      'TN': 'TND', 'DZ': 'DZD', 'IQ': 'IQD', 'SY': 'SYP', 'YE': 'YER',
+      'SD': 'SDG', 'LY': 'LYD', 'US': 'USD', 'GB': 'GBP', 'CA': 'CAD',
+      'AU': 'AUD', 'FR': 'EUR', 'DE': 'EUR', 'IT': 'EUR', 'ES': 'EUR',
+      'TR': 'TRY', 'IN': 'INR', 'CN': 'CNY', 'JP': 'JPY', 'KR': 'KRW',
+      'RU': 'RUB', 'BR': 'BRL'
+    };
+    
+    // جعل الدوال متاحة عالمياً
+    window.handleRegister = handleRegister;
+    window.handleGoogleRegister = handleGoogleRegister;
+    
+    function showMessage(type, text) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> 
+        ${text}
+      `;
+      messageDiv.className = `message ${type}`;
+      messageDiv.style.display = 'block';
+      
+      if (type !== 'success') {
+        setTimeout(() => {
+          messageDiv.style.display = 'none';
+        }, 5000);
+      }
+    }
+
+    function validateInputs() {
+      const fullName = document.getElementById('fullName').value.trim();
+      const birthDay = document.getElementById('birthDay').value;
+      const birthMonth = document.getElementById('birthMonth').value;
+      const birthYear = document.getElementById('birthYear').value;
+      const email = document.getElementById('email').value.trim();
+      const phoneCode = document.getElementById('phoneCode').value;
+      const phone = document.getElementById('phone').value.trim();
+      const storeName = document.getElementById('storeName').value.trim();
+      const storeType = document.getElementById('storeType').value;
+      const country = document.getElementById('country').value;
+      const city = document.getElementById('city').value;
+      const currency = document.getElementById('currency').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      if (!fullName) {
+        showMessage('error', 'الرجاء إدخال الاسم الكامل');
+        return false;
+      }
+      
+      if (!birthDay || !birthMonth || !birthYear) {
+        showMessage('error', 'الرجاء اختيار تاريخ الميلاد كاملاً');
+        return false;
+      }
+      
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showMessage('error', 'الرجاء إدخال بريد إلكتروني صحيح');
+        return false;
+      }
+      
+      if (!phoneCode || !phone) {
+        showMessage('error', 'الرجاء إدخال رقم الهاتف كاملاً');
+        return false;
+      }
+      
+      const phoneRegex = /^[0-9]{8,15}$/;
+      if (!phoneRegex.test(phone)) {
+        showMessage('error', 'الرجاء إدخال رقم هاتف صحيح (8-15 رقم)');
+        return false;
+      }
+      
+      if (!storeName) {
+        showMessage('error', 'الرجاء إدخال اسم المتجر');
+        return false;
+      }
+      
+      if (!storeType) {
+        showMessage('error', 'الرجاء اختيار نوع المحل');
+        return false;
+      }
+      
+      if (!country) {
+        showMessage('error', 'الرجاء اختيار الدولة');
+        return false;
+      }
+      
+      if (!city) {
+        showMessage('error', 'الرجاء اختيار المدينة');
+        return false;
+      }
+      
+      if (!currency) {
+        showMessage('error', 'الرجاء اختيار العملة');
+        return false;
+      }
+      
+      if (password.length < 6) {
+        showMessage('error', 'كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+        return false;
+      }
+      
+      if (password !== confirmPassword) {
+        showMessage('error', 'كلمات المرور غير متطابقة');
+        return false;
+      }
+      
+      return true;
+    }
+
+    async function createUserInFirestore(user, userData) {
+      try {
+        const birthDate = `${userData.birthYear}-${userData.birthMonth.padStart(2, '0')}-${userData.birthDay.padStart(2, '0')}`;
+        const isAdmin = userData.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+        
+        const userDoc = {
+          uid: user.uid,
+          fullName: userData.fullName,
+          email: userData.email,
+          phoneCode: userData.phoneCode,
+          phone: userData.phone,
+          fullPhone: userData.phoneCode + userData.phone,
+          birthDate: birthDate,
+          userType: isAdmin ? 'admin' : 'user',
+          approved: true,
+          storeName: userData.storeName,
+          storeType: userData.storeType,
+          country: userData.country,
+          city: userData.city,
+          currency: userData.currency,
+          storeId: isAdmin ? null : 'store_' + Date.now(),
+          profileComplete: true,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          loginMethod: 'email'
+        };
+        
+        await setDoc(doc(db, "dnrx_users", user.uid), userDoc);
+        
+        if (!isAdmin) {
+          await setDoc(doc(db, "dnrx_stores", userDoc.storeId), {
+            storeId: userDoc.storeId,
+            ownerId: user.uid,
+            storeName: userData.storeName,
+            storeType: userData.storeType,
+            country: userData.country,
+            city: userData.city,
+            currency: userData.currency,
+            phoneCode: userData.phoneCode,
+            phone: userData.phone,
+            createdAt: serverTimestamp(),
+            products: [],
+            settings: {
+              taxEnabled: false,
+              receiptFooter: 'شكراً لتسوقكم معنا'
+            }
+          });
+          
+          await setDoc(doc(db, "dnrx_store_products", userDoc.storeId), {
+            storeId: userDoc.storeId,
+            products: []
+          });
+        }
+        
+        console.log("✅ تم حفظ بيانات المستخدم في Firestore");
+        return true;
+      } catch (error) {
+        console.error("❌ خطأ في حفظ بيانات المستخدم:", error);
+        return false;
+      }
+    }
+
+    async function handleRegister() {
+      if (!validateInputs()) {
+        return;
+      }
+      
+      const fullName = document.getElementById('fullName').value.trim();
+      const birthDay = document.getElementById('birthDay').value;
+      const birthMonth = document.getElementById('birthMonth').value;
+      const birthYear = document.getElementById('birthYear').value;
+      const email = document.getElementById('email').value.trim();
+      const phoneCode = document.getElementById('phoneCode').value;
+      const phone = document.getElementById('phone').value.trim();
+      const storeName = document.getElementById('storeName').value.trim();
+      const storeType = document.getElementById('storeType').value;
+      const country = document.getElementById('country').value;
+      const city = document.getElementById('city').value;
+      const currency = document.getElementById('currency').value;
+      const password = document.getElementById('password').value;
+      
+      const registerBtn = document.getElementById('registerBtn');
+      const originalText = registerBtn.innerHTML;
+      registerBtn.innerHTML = '<span class="spinner"></span> جاري إنشاء الحساب...';
+      registerBtn.disabled = true;
+      
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        console.log("✅ تم إنشاء المستخدم:", user.uid);
+        
+        const userData = {
+          fullName: fullName,
+          birthDay: birthDay,
+          birthMonth: birthMonth,
+          birthYear: birthYear,
+          email: email,
+          phoneCode: phoneCode,
+          phone: phone,
+          storeName: storeName,
+          storeType: storeType,
+          country: country,
+          city: city,
+          currency: currency
+        };
+        
+        const firestoreSuccess = await createUserInFirestore(user, userData);
+        
+        if (firestoreSuccess) {
+          const isAdmin = email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+          
+          const userSession = {
+            uid: user.uid,
+            email: email,
+            userType: isAdmin ? 'admin' : 'user',
+            fullName: fullName,
+            storeName: storeName,
+            currency: currency,
+            country: country,
+            city: city,
+            phoneCode: phoneCode,
+            phone: phone,
+            storeId: isAdmin ? null : 'store_' + Date.now(),
+            approved: true,
+            profileComplete: true
+          };
+          
+          localStorage.setItem('dnrx_user', JSON.stringify(userSession));
+          
+          if (isAdmin) {
+            showMessage('success', 'تم إنشاء حساب المسؤول بنجاح! يتم التوجيه...');
+            setTimeout(() => {
+              window.location.href = 'admin.html';
+            }, 2000);
+          } else {
+            showMessage('success', 'تم إنشاء حساب متجرك الخاص بنجاح! يتم التوجيه...');
+            setTimeout(() => {
+              window.location.href = 'main.html';
+            }, 2000);
+          }
+        } else {
+          showMessage('error', 'حدث خطأ في حفظ البيانات');
+          registerBtn.innerHTML = originalText;
+          registerBtn.disabled = false;
+        }
+        
+      } catch (error) {
+        registerBtn.innerHTML = originalText;
+        registerBtn.disabled = false;
+        
+        console.error("❌ خطأ في التسجيل:", error);
+        
+        let errorMessage = 'حدث خطأ أثناء إنشاء الحساب';
+        
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'البريد الإلكتروني غير صالح';
+            break;
+          case 'auth/operation-not-allowed':
+            errorMessage = 'عملية التسجيل غير مسموحة حالياً';
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'كلمة المرور ضعيفة جداً';
+            break;
+          default:
+            errorMessage = `خطأ: ${error.message}`;
+        }
+        
+        showMessage('error', errorMessage);
+      }
+    }
+
+    async function handleGoogleRegister() {
+      const googleBtn = document.getElementById('googleBtn');
+      const originalText = googleBtn.innerHTML;
+      googleBtn.innerHTML = '<span class="spinner"></span> جاري الاتصال بـ Google...';
+      googleBtn.disabled = true;
+      
+      try {
+        // إنشاء مزود Google
+        const provider = new GoogleAuthProvider();
+        
+        // إضافة نطاقات إضافية
+        provider.addScope('profile');
+        provider.addScope('email');
+        
+        // إعداد معلمات مخصصة
+        provider.setCustomParameters({
+          prompt: 'select_account'
+        });
+        
+        console.log("🔍 بدأ تسجيل الدخول عبر Google...");
+        
+        // تنفيذ تسجيل الدخول بالنافذة المنبثقة
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        
+        console.log("✅ تم التسجيل عبر Google:", user.uid, user.email);
+        
+        // التحقق إذا كان هذا البريد هو الأدمن
+        const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+        
+        // تحضير بيانات المستخدم
+        const userData = {
+          uid: user.uid,
+          email: user.email,
+          fullName: user.displayName || 'مستخدم Google',
+          phone: '',
+          birthDate: '',
+          storeName: `متجر ${user.displayName || 'Google'}`,
+          storeType: 'other',
+          country: 'SA',
+          city: 'الرياض',
+          currency: 'SAR',
+          userType: isAdmin ? 'admin' : 'user',
+          approved: true,
+          profileComplete: false,
+          loginMethod: 'google',
+          googleId: user.uid,
+          photoURL: user.photoURL || '',
+          phoneCode: '+966',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        };
+        
+        // حفظ البيانات في Firestore
+        await setDoc(doc(db, "dnrx_users", user.uid), userData);
+        
+        // حفظ بيانات الجلسة
+        localStorage.setItem('dnrx_user', JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          fullName: user.displayName || 'مستخدم Google',
+          profileComplete: false,
+          userType: isAdmin ? 'admin' : 'user',
+          approved: true
+        }));
+        
+        showMessage('success', 'تم التسجيل عبر Google! يرجى إكمال بيانات ملفك الشخصي');
+        setTimeout(() => {
+          window.location.href = 'profile.html';
+        }, 1500);
+        
+      } catch (error) {
+        googleBtn.innerHTML = originalText;
+        googleBtn.disabled = false;
+        
+        console.error("❌ خطأ في التسجيل عبر Google:", error.code, error.message);
+        
+        let errorMessage = 'حدث خطأ أثناء التسجيل عبر Google';
+        
+        switch (error.code) {
+          case 'auth/popup-closed-by-user':
+            errorMessage = 'تم إغلاق نافذة التسجيل';
+            break;
+          case 'auth/popup-blocked':
+            errorMessage = 'تم حظر نافذة التسجيل. يرجى السماح بالنوافذ المنبثقة';
+            break;
+          case 'auth/unauthorized-domain':
+            errorMessage = 'هذا النطاق غير مصرح به للتسجيل عبر Google';
+            break;
+          case 'auth/account-exists-with-different-credential':
+            errorMessage = 'هذا الحساب مسجل بالفعل بطريقة مختلفة';
+            break;
+          case 'auth/operation-not-allowed':
+            errorMessage = 'تسجيل الدخول عبر Google غير مفعل';
+            break;
+          default:
+            errorMessage = `خطأ: ${error.message}`;
+        }
+        
+        showMessage('error', errorMessage);
+      }
+    }
+    
+    $(document).ready(function() {
+      // تهيئة قائمة الدول
+      $('.country-select').select2({
+        data: countries.map(country => ({
+          id: country.id,
+          text: country.name
+        })),
+        placeholder: "ابحث عن دولة...",
+        allowClear: false,
+        language: {
+          noResults: function() {
+            return "لم يتم العثور على نتائج";
+          },
+          searching: function() {
+            return "جاري البحث...";
+          }
+        }
+      }).on('change', function() {
+        const countryCode = $(this).val();
+        const country = countries.find(c => c.id === countryCode);
+        
+        if (country) {
+          // تحديث رمز الهاتف
+          $('#phoneCode').val(country.phoneCode);
+          
+          // تحديث العملة الافتراضية
+          const defaultCurrency = countryCurrencyMap[countryCode] || 'USD';
+          $('.currency-select').val(defaultCurrency).trigger('change');
+          
+          // تحديث المدن
+          const citySelect = $('#city');
+          citySelect.empty();
+          citySelect.append('<option value="">اختر المدينة...</option>');
+          
+          if (citiesByCountry[countryCode]) {
+            citiesByCountry[countryCode].forEach(city => {
+              citySelect.append(`<option value="${city}">${city}</option>`);
+            });
+          } else {
+            citySelect.append('<option value="">اكتب اسم المدينة</option>');
+          }
+          
+          citySelect.select2({
+            placeholder: "اختر المدينة...",
+            allowClear: false
+          });
+        }
+      });
+      
+      // تهيئة قائمة العملات
+      $('.currency-select').select2({
+        data: currencies.map(currency => ({
+          id: currency.id,
+          text: `${currency.name} (${currency.symbol})`
+        })),
+        placeholder: "اختر العملة...",
+        allowClear: false
+      });
+      
+      // تهيئة قائمة رموز الهاتف
+      const phoneCodeSelect = $('#phoneCode');
+      phoneCodeSelect.empty();
+      
+      const uniquePhoneCodes = [];
+      const phoneCodesMap = {};
+      
+      countries.forEach(country => {
+        if (!phoneCodesMap[country.phoneCode]) {
+          phoneCodesMap[country.phoneCode] = true;
+          uniquePhoneCodes.push({
+            code: country.phoneCode,
+            name: `${country.phoneCode} (${country.name})`
+          });
+        }
+      });
+      
+      uniquePhoneCodes.sort((a, b) => {
+        if (a.code === '+966') return -1;
+        if (b.code === '+966') return 1;
+        return a.name.localeCompare(b.name);
+      });
+      
+      uniquePhoneCodes.forEach(phoneCode => {
+        phoneCodeSelect.append(`<option value="${phoneCode.code}">${phoneCode.name}</option>`);
+      });
+      
+      // تحقق من رقم الهاتف
+      $('#phone').on('input', function() {
+        let value = $(this).val().replace(/\D/g, '');
+        $(this).val(value.substring(0, 15));
+      });
+      
+      // تحقق من تطابق كلمات المرور
+      $('#confirmPassword').on('input', function() {
+        const password = $('#password').val();
+        const confirm = $(this).val();
+        
+        if (confirm.length === 0) return;
+        
+        if (password === confirm) {
+          $(this).css('border-color', '#2e7d32');
+        } else {
+          $(this).css('border-color', '#c62828');
+        }
+      });
+    });
+    
+    // إضافة مستمعات الأحداث للزرين
+    document.getElementById('registerBtn').addEventListener('click', handleRegister);
+    document.getElementById('googleBtn').addEventListener('click', handleGoogleRegister);
+    
+    document.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        handleRegister();
+      }
+    });
+    
+    window.addEventListener('load', () => {
+      console.log('🚀 صفحة تسجيل DNRX جاهزة');
+    });
+  </script>
+</body>
+</html>
